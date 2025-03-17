@@ -1,0 +1,53 @@
+TAG: NXP - Mifare Ultralight
+TECH : NfcA
+COLOR: Dark Brown
+TYPE : PLA
+SERIAL: 53:91:39:7B:41:00:01
+ATWA: 0x0044
+SAK: 0x00
+
+[ 53:91:39:73 ] Addr. 00 : DATA
+[ 7B:41:00:01 ] Addr. 01 : DATA
+[ 3B:48:00:00 ] Addr. 02 : DATA
+[ E1:10:12:00 ] Addr. 03 : DATA
+[ 7B:00:64:00 ] Addr. 04 : DATA
+[ 41:48:50:4C ] Addr. 05 : DATA
+[ 4B:42:2D:31 ] Addr. 06 : DATA
+[ 30:33:00:00 ] Addr. 07 : DATA
+[ 00:00:00:00 ] Addr. 08 : DATA
+[ 00:00:00:00 ] Addr. 09 : DATA
+[ 00:00:00:00 ] Addr. 0A : DATA
+[ 00:00:00:00 ] Addr. 0B : DATA
+[ 00:00:00:00 ] Addr. 0C : DATA
+[ 00:00:00:00 ] Addr. 0D : DATA
+[ 00:00:00:00 ] Addr. 0E : DATA
+[ 50:4C:41:00 ] Addr. 0F : DATA
+[ 00:00:00:00 ] Addr. 10 : DATA
+[ 00:00:00:00 ] Addr. 11 : DATA
+[ 00:00:00:00 ] Addr. 12 : DATA
+[ 00:00:00:00 ] Addr. 13 : DATA
+[ FF:3E:5D:96 ] Addr. 14 : DATA
+[ 00:00:00:00 ] Addr. 15 : DATA
+[ 00:00:00:00 ] Addr. 16 : DATA
+[ 00:00:00:00 ] Addr. 17 : DATA
+[ C8:00:D2:00 ] Addr. 18 : DATA
+[ 00:00:00:00 ] Addr. 19 : DATA
+[ 00:00:00:00 ] Addr. 1A : DATA
+[ 00:00:00:00 ] Addr. 1B : DATA
+[ 00:00:00:00 ] Addr. 1C : DATA
+[ 32:00:3C:00 ] Addr. 1D : DATA
+[ AF:00:4A:01 ] Addr. 1E : DATA
+[ E8:03:00:00 ] Addr. 1F : DATA
+[ 00:00:00:00 ] Addr. 20 : DATA
+[ 00:00:00:00 ] Addr. 21 : DATA
+[ 00:00:00:00 ] Addr. 22 : DATA
+[ 00:00:00:00 ] Addr. 23 : DATA
+[ 00:00:00:00 ] Addr. 24 : DATA
+[ 00:00:00:00 ] Addr. 25 : DATA
+[ 00:00:00:00 ] Addr. 26 : DATA
+[ 00:00:00:00 ] Addr. 27 : DATA
+[ 00:00:00:BD ] Addr. 28 : DATA
+[ 04:00:00:04 ] Addr. 29 : DATA
+[ 00:00:00:00 ] Addr. 2A : DATA
+[ 00:00:00:00 ] Addr. 2B : DATA
+[ 00:00:00:00 ] Addr. 2C : DATA
