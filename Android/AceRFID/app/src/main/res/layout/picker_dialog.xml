@@ -105,7 +105,6 @@
         app:layout_constraintTop_toBottomOf="@+id/seekbar_font" />
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="142dp"
         android:layout_height="wrap_content"
         android:text="@string/hex_color_code"

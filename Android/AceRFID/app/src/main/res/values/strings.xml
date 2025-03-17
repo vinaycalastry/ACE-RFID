@@ -22,4 +22,5 @@
     <string name="size">Size:</string>
     <string name="info_temps">Extruder Temp: %d min | %d max\nBed Temp: %d min | %d max</string>
     <string name="hex_color_code">HEX Color Code</string>
+    <string name="no_nfc_tag_found">No NFC tag found</string>
 </resources>

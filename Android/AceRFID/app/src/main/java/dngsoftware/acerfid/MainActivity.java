@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void readTag(Tag tag) {
         if (tag == null) {
-            Toast.makeText(getApplicationContext(), "No NFC tag found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.no_nfc_tag_found, Toast.LENGTH_SHORT).show();
             return;
         }
         MifareUltralight ultralight = MifareUltralight.get(tag);
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void writeTag(Tag tag) {
         if (tag == null) {
-            Toast.makeText(getApplicationContext(), "No NFC tag found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.no_nfc_tag_found, Toast.LENGTH_SHORT).show();
             return;
         }
 
