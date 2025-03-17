@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Ace RFID</string>
+    <string name="select">Select</string>
+    <string name="picker">Picker</string>
+    <string name="auto_read_on_tag_scan">Auto read on tag scan?</string>
+    <string name="type">Type:</string>
+    <string name="color">Color:</string>
+    <string name="_00_00_00_00">00 00 00 00 00 00</string>
+    <string name="tag_id">Tag ID:</string>
+    <string name="read">Read</string>
+    <string name="write">Write</string>
+    <string name="pick_color">Pick Color</string>
+    <string name="tag_found">"TAG Found: "</string>
+    <string name="this_device_does_not_support_mifare_ultralight_tags">This device does not support \"Mifare Ultralight\" tags</string>
+    <string name="please_activate_nfc">Please activate NFC</string>
+    <string name="data_written_to_tag">Data written to TAG</string>
+    <string name="error_writing_to_tag">Error writing to TAG</string>
+    <string name="invalid_tag_type">Invalid tag type</string>
+    <string name="error_reading_tag">Error reading TAG</string>
+    <string name="data_read_from_tag">Data read from TAG</string>
+    <string name="unknown_or_empty_tag">Unknown or empty TAG</string>
+    <string name="size">Size:</string>
+    <string name="info_temps">Extruder Temp: %d min | %d max\nBed Temp: %d min | %d max</string>
+    <string name="hex_color_code">HEX Color Code</string>
+</resources>
