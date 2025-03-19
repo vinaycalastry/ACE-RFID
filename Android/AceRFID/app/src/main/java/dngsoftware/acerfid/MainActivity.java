@@ -56,9 +56,8 @@ import java.util.Arrays;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity {
-
-    nAdapter nfcReader = null;
+public class MainActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback{
+    private NfcAdapter nfcAdapter;
     Tag currentTag = null;
     ArrayAdapter<String> madapter, sadapter;
     String MaterialName, MaterialWeight = "1 KG", MaterialColor = "0000FF";
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         Button rbtn = findViewById(R.id.readbutton);
         Button wbtn = findViewById(R.id.writebutton);
         infoText = findViewById(R.id.infotext);
-
         colorView.setOnClickListener(view -> openPicker());
         colorView.setBackgroundColor(Color.argb(255, 0, 0, 255));
         rbtn.setOnClickListener(view -> readTag(currentTag));
@@ -93,7 +91,18 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), R.string.this_device_does_not_support_mifare_ultralight_tags, Toast.LENGTH_SHORT).show();
         }
 
-        nfcReader = new nAdapter(this);
+        try {
+            nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+            if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+                Bundle options = new Bundle();
+                options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 250);
+                nfcAdapter.enableReaderMode(this, this, NfcAdapter.FLAG_READER_NFC_A, options);
+            }else {
+                Toast.makeText(getApplicationContext(), R.string.please_activate_nfc, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                finish();
+            }
+        } catch (Exception ignored) {}
 
         sadapter = new ArrayAdapter<>(this, R.layout.spinner_item, materialWeights);
         spoolsize.setAdapter(sadapter);
@@ -148,35 +157,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            nfcReader.enableForeground();
-            if (!nfcReader.getNfc().isEnabled()) {
-                Toast.makeText(getApplicationContext(), R.string.please_activate_nfc, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-            }
-        } catch (Exception ignored) {}
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        try {
-            nfcReader.disableForeground();
-        } catch (Exception ignored) {
+        if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+            try {
+                nfcAdapter.disableReaderMode(this);
+            } catch (Exception ignored) {}
         }
-    }
-
-    @Override
-    public void onNewIntent(@NonNull Intent intent) {
-        super.onNewIntent(intent);
-        ReadTagUID(intent);
     }
 
     @Override
@@ -186,13 +173,26 @@ public class MainActivity extends AppCompatActivity {
             pickerDialog.dismiss();
             openPicker();
         }
+    }
 
+    @Override
+    public void onTagDiscovered(Tag tag) {
+        try {
+            currentTag = tag;
+            runOnUiThread(() -> {
+                Toast.makeText(getApplicationContext(), getString(R.string.tag_found) + bytesToHex(currentTag.getId(), false), Toast.LENGTH_SHORT).show();
+                tagID.setText(bytesToHex(currentTag.getId(), true));
+                if (GetSetting(this, "autoread", false)) {
+                    readTag(currentTag);
+                }
+            });
+        } catch (Exception ignored) {}
     }
 
     void ReadTagUID(Intent intent) {
         if (intent != null) {
             try {
-                if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
+                if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction()) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
                     currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                     assert currentTag != null;
                     Toast.makeText(getApplicationContext(), getString(R.string.tag_found) + bytesToHex(currentTag.getId(), false), Toast.LENGTH_SHORT).show();
@@ -416,5 +416,4 @@ public class MainActivity extends AppCompatActivity {
             pickerDialog.show();
         } catch (Exception ignored) {}
     }
-
 }
