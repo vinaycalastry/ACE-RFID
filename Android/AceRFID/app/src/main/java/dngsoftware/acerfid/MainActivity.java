@@ -1,6 +1,8 @@
 package dngsoftware.acerfid;
 
 import static java.lang.String.format;
+import dngsoftware.acerfid.databinding.ActivityMainBinding;
+import dngsoftware.acerfid.databinding.PickerDialogBinding;
 import static dngsoftware.acerfid.Utils.GetMaterialLength;
 import static dngsoftware.acerfid.Utils.GetMaterialWeight;
 import static dngsoftware.acerfid.Utils.GetTemps;
@@ -40,21 +42,14 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.materialswitch.MaterialSwitch;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
-
 
 public class MainActivity extends AppCompatActivity implements NfcAdapter.ReaderCallback{
     private NfcAdapter nfcAdapter;
@@ -62,29 +57,19 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
     ArrayAdapter<String> madapter, sadapter;
     String MaterialName, MaterialWeight = "1 KG", MaterialColor = "0000FF";
     Dialog pickerDialog;
-    View colorView;
-    TextView tagID, infoText;
     int SelectedSize;
-    MaterialSwitch autoread;
-    Spinner material, spoolsize;
+    private ActivityMainBinding main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        spoolsize = findViewById(R.id.spoolsize);
-        material = findViewById(R.id.material);
-        colorView = findViewById(R.id.colorview);
-        Spinner colorspin = findViewById(R.id.colorspin);
-        autoread = findViewById(R.id.autoread);
-        tagID = findViewById(R.id.tagid);
-        Button rbtn = findViewById(R.id.readbutton);
-        Button wbtn = findViewById(R.id.writebutton);
-        infoText = findViewById(R.id.infotext);
-        colorView.setOnClickListener(view -> openPicker());
-        colorView.setBackgroundColor(Color.argb(255, 0, 0, 255));
-        rbtn.setOnClickListener(view -> readTag(currentTag));
-        wbtn.setOnClickListener(view -> writeTag(currentTag));
+        main = ActivityMainBinding.inflate(getLayoutInflater());
+        View rv = main.getRoot();
+        setContentView(rv);
+        main.colorview.setOnClickListener(view -> openPicker());
+        main.colorview.setBackgroundColor(Color.argb(255, 0, 0, 255));
+        main.readbutton.setOnClickListener(view -> readTag(currentTag));
+        main.writebutton.setOnClickListener(view -> writeTag(currentTag));
 
         SetPermissions(this);
         if (!canMfc(this)) {
@@ -105,12 +90,12 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         } catch (Exception ignored) {}
 
         sadapter = new ArrayAdapter<>(this, R.layout.spinner_item, materialWeights);
-        spoolsize.setAdapter(sadapter);
-        spoolsize.setSelection(SelectedSize);
-        spoolsize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        main.spoolsize.setAdapter(sadapter);
+        main.spoolsize.setSelection(SelectedSize);
+        main.spoolsize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                SelectedSize = spoolsize.getSelectedItemPosition();
+                SelectedSize = main.spoolsize.getSelectedItemPosition();
                 MaterialWeight = sadapter.getItem(position);
             }
 
@@ -120,14 +105,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         });
 
         madapter = new ArrayAdapter<>(this, R.layout.spinner_item, materialTypes);
-        material.setAdapter(madapter);
-        material.setSelection(3);
-        material.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        main.material.setAdapter(madapter);
+        main.material.setSelection(3);
+        main.material.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 MaterialName = madapter.getItem(position);
                 assert MaterialName != null;
-                infoText.setText(String.format(Locale.getDefault(),getString(R.string.info_temps),
+                main.infotext.setText(String.format(Locale.getDefault(),getString(R.string.info_temps),
                         GetTemps(MaterialName)[0], GetTemps(MaterialName)[1], GetTemps(MaterialName)[2], GetTemps(MaterialName)[3]));
             }
 
@@ -136,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             }
         });
 
-        colorspin.setOnTouchListener((v, event) -> {
+        main.colorspin.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     openPicker();
@@ -150,8 +135,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             return false;
         });
 
-        autoread.setChecked(GetSetting(this, "autoread", false));
-        autoread.setOnCheckedChangeListener((buttonView, isChecked) -> SaveSetting(this, "autoread", isChecked));
+        main.autoread.setChecked(GetSetting(this, "autoread", false));
+        main.autoread.setOnCheckedChangeListener((buttonView, isChecked) -> SaveSetting(this, "autoread", isChecked));
 
         ReadTagUID(getIntent());
     }
@@ -181,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             currentTag = tag;
             runOnUiThread(() -> {
                 Toast.makeText(getApplicationContext(), getString(R.string.tag_found) + bytesToHex(currentTag.getId(), false), Toast.LENGTH_SHORT).show();
-                tagID.setText(bytesToHex(currentTag.getId(), true));
+                main.tagid.setText(bytesToHex(currentTag.getId(), true));
                 if (GetSetting(this, "autoread", false)) {
                     readTag(currentTag);
                 }
@@ -196,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                     currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                     assert currentTag != null;
                     Toast.makeText(getApplicationContext(), getString(R.string.tag_found) + bytesToHex(currentTag.getId(), false), Toast.LENGTH_SHORT).show();
-                    tagID.setText(bytesToHex(currentTag.getId(), true));
+                    main.tagid.setText(bytesToHex(currentTag.getId(), true));
                     if (GetSetting(this, "autoread", false)) {
                         readTag(currentTag);
                     }
@@ -224,19 +209,19 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 }
                 if (buff.array()[0] != (byte)0x00) {
                     MaterialName = new String(subArray(buff.array(), 44, 16), StandardCharsets.UTF_8 ).trim();
-                    material.setSelection(madapter.getPosition(MaterialName));
+                    main.material.setSelection(madapter.getPosition(MaterialName));
                     MaterialColor = parseColor(subArray(buff.array(), 65, 3));
-                    colorView.setBackgroundColor(Color.parseColor("#" + MaterialColor));
+                    main.colorview.setBackgroundColor(Color.parseColor("#" + MaterialColor));
                     // String sku = new String(subArray(buff.array(), 4, 16), StandardCharsets.UTF_8 ).trim();
                     // String Brand = new String(subArray(buff.array(), 24, 16), StandardCharsets.UTF_8).trim();
                     int extMin = parseNumber(subArray(buff.array(),80,2));
                     int extMax = parseNumber(subArray(buff.array(),82,2));
                     int bedMin = parseNumber(subArray(buff.array(),100,2));
                     int bedMax = parseNumber(subArray(buff.array(),102,2));
-                    infoText.setText(String.format(Locale.getDefault(),getString(R.string.info_temps), extMin, extMax, bedMin, bedMax));
+                    main.infotext.setText(String.format(Locale.getDefault(),getString(R.string.info_temps), extMin, extMax, bedMin, bedMax));
                     // int diameter = parseNumber(subArray(buff.array(),104,2));
                     MaterialWeight = GetMaterialWeight(parseNumber(subArray(buff.array(),106,2)));
-                    spoolsize.setSelection(sadapter.getPosition(MaterialWeight));
+                    main.spoolsize.setSelection(sadapter.getPosition(MaterialWeight));
                     Toast.makeText(getApplicationContext(), R.string.data_read_from_tag, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.unknown_or_empty_tag, Toast.LENGTH_SHORT).show();
@@ -258,20 +243,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             Toast.makeText(getApplicationContext(), R.string.no_nfc_tag_found, Toast.LENGTH_SHORT).show();
             return;
         }
-
         MifareUltralight ultralight = MifareUltralight.get(tag);
         if (ultralight != null) {
             try {
                 ultralight.connect();
-                ultralight.writePage(4, new byte[]{(byte) 0x7B, (byte) 0x00, (byte) 0x65, (byte) 0x00}); //mb / data len?
-                ultralight.writePage(5, new byte[] {(byte)0x41, (byte)0x48, (byte)0x50, (byte)0x4C});    //sku
-                ultralight.writePage(6, new byte[] {(byte)0x4C, (byte)0x42, (byte)0x2D, (byte)0x31});    //sku
-                ultralight.writePage(7, new byte[] {(byte)0x30, (byte)0x33, (byte)0x00, (byte)0x00});    //sku
-                ultralight.writePage(8, new byte[] {(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00});    //sku
-                ultralight.writePage(10, new byte[] {(byte)0x41, (byte)0x43, (byte)0x00, (byte)0x00});   //brand
-                ultralight.writePage(11, new byte[] {(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00});   //brand
-                ultralight.writePage(12, new byte[] {(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00});   //brand
-                ultralight.writePage(13, new byte[] {(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00});   //brand
+                ultralight.writePage(4, new byte[]{123, 0, 101, 0});
+                for (int i = 0; i < 10; i ++) {
+                    ultralight.writePage(5 + i, new byte[] {0, 0, 0, 0});
+                }
                 byte[] matData = new byte[16];
                 Arrays.fill(matData, (byte) 0);
                 System.arraycopy(MaterialName.getBytes(), 0, matData, 0, MaterialName.getBytes().length);
@@ -280,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 ultralight.writePage(17,subArray(matData,8,4));   //type
                 ultralight.writePage(18,subArray(matData,12,4));  //type
                 ultralight.writePage(20, parseColor(MaterialColor + "FF")); //color
+                //ultralight.writePage(23, new byte[] {50, 0, 100, 0});   //more temps?
                 byte[] extTemp = new byte[4];
                 System.arraycopy(numToBytes(GetTemps(MaterialName)[0]), 0, extTemp, 0, 2); //min
                 System.arraycopy(numToBytes(GetTemps(MaterialName)[1]), 0, extTemp, 2, 2); //max
@@ -292,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 System.arraycopy(numToBytes(175), 0, filData, 0, 2); //diameter
                 System.arraycopy(numToBytes(GetMaterialLength(MaterialWeight)), 0, filData, 2, 2); //length
                 ultralight.writePage(30, filData);
-                ultralight.writePage(31, new byte[] {(byte)0xE8, (byte)0x03, (byte)0x00, (byte)0x00}); //?
+                ultralight.writePage(31, new byte[] {(byte) 232, 3, 0, 0}); //?
                 playBeep();
                 Toast.makeText(getApplicationContext(), R.string.data_written_to_tag, Toast.LENGTH_SHORT).show();
             } catch (Exception ignored) {
@@ -312,45 +292,44 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         try {
             pickerDialog = new Dialog(this, R.style.Theme_AceRFID);
             pickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            pickerDialog.setContentView(R.layout.picker_dialog);
             pickerDialog.setCanceledOnTouchOutside(false);
             pickerDialog.setTitle(R.string.pick_color);
-            final Button btnCls = pickerDialog.findViewById(R.id.btncls);
-            EditText colorTxt = pickerDialog.findViewById(R.id.txtcolor);
-            View dcolorView = pickerDialog.findViewById(R.id.dcolorview);
-            ImageView picker = pickerDialog.findViewById(R.id.picker);
-            dcolorView.setBackgroundColor(Color.parseColor("#" + MaterialColor));
-            colorTxt.setText(MaterialColor);
-            btnCls.setOnClickListener(v -> {
-                if (colorTxt.getText().toString().length() == 6) {
+            PickerDialogBinding dl = PickerDialogBinding.inflate(getLayoutInflater());
+            View rv = dl.getRoot();
+            pickerDialog.setContentView(rv);
+
+            dl.dcolorview.setBackgroundColor(Color.parseColor("#" + MaterialColor));
+            dl.txtcolor.setText(MaterialColor);
+            dl.btncls.setOnClickListener(v -> {
+                if (dl.txtcolor.getText().toString().length() == 6) {
                     try {
-                        MaterialColor = colorTxt.getText().toString();
-                        colorView.setBackgroundColor(Color.parseColor("#" + MaterialColor));
-                        dcolorView.setBackgroundColor(Color.parseColor("#" + MaterialColor));
+                        MaterialColor = dl.txtcolor.getText().toString();
+                        main.colorview.setBackgroundColor(Color.parseColor("#" + MaterialColor));
+                        dl.dcolorview.setBackgroundColor(Color.parseColor("#" + MaterialColor));
                     } catch (Exception ignored) {
                     }
                 }
                 pickerDialog.dismiss();
             });
-            colorTxt.setOnEditorActionListener((v, actionId, event) -> {
+            dl.txtcolor.setOnEditorActionListener((v, actionId, event) -> {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(colorTxt.getWindowToken(), 0);
-                if (colorTxt.getText().toString().length() == 6) {
+                imm.hideSoftInputFromWindow(dl.txtcolor.getWindowToken(), 0);
+                if (dl.txtcolor.getText().toString().length() == 6) {
                     try {
-                        MaterialColor = colorTxt.getText().toString();
-                        colorView.setBackgroundColor(Color.parseColor("#" + MaterialColor));
-                        dcolorView.setBackgroundColor(Color.parseColor("#" + MaterialColor));
+                        MaterialColor = dl.txtcolor.getText().toString();
+                        main.colorview.setBackgroundColor(Color.parseColor("#" + MaterialColor));
+                        dl.dcolorview.setBackgroundColor(Color.parseColor("#" + MaterialColor));
 
                     } catch (Exception ignored) {}
                 }
                 return true;
             });
-            picker.setOnTouchListener((v, event) -> {
-                final int currPixel = getPixelColor(event, picker);
+            dl.picker.setOnTouchListener((v, event) -> {
+                final int currPixel = getPixelColor(event, dl.picker);
                 if (currPixel != 0) {
                     MaterialColor = format("%02x%02x%02x", Color.red(currPixel), Color.green(currPixel), Color.blue(currPixel)).toUpperCase();
-                    colorView.setBackgroundColor(Color.argb(255, Color.red(currPixel), Color.green(currPixel), Color.blue(currPixel)));
-                    dcolorView.setBackgroundColor(Color.argb(255, Color.red(currPixel), Color.green(currPixel), Color.blue(currPixel)));
+                    main.colorview.setBackgroundColor(Color.argb(255, Color.red(currPixel), Color.green(currPixel), Color.blue(currPixel)));
+                    dl.dcolorview.setBackgroundColor(Color.argb(255, Color.red(currPixel), Color.green(currPixel), Color.blue(currPixel)));
                     pickerDialog.dismiss();
                 }
                 return false;
@@ -359,14 +338,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             float scrWwidth = displayMetrics.widthPixels;
             if (scrWwidth > dp2Px(this, 500)) scrWwidth = dp2Px(this, 500);
-            SeekBar seekBarFont = pickerDialog.findViewById(R.id.seekbar_font);
+
             LinearGradient test = new LinearGradient(50.f, 0.f, scrWwidth - 250, 0.0f,
                     new int[]{0xFF000000, 0xFF0000FF, 0xFF00FF00, 0xFF00FFFF, 0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF}, null, Shader.TileMode.CLAMP);
             ShapeDrawable shape = new ShapeDrawable(new RectShape());
             shape.getPaint().setShader(test);
-            seekBarFont.setProgressDrawable(shape);
-            seekBarFont.setMax(256 * 7 - 1);
-            seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            dl.seekbarFont.setProgressDrawable(shape);
+            dl.seekbarFont.setMax(256 * 7 - 1);
+            dl.seekbarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     if (fromUser) {
@@ -399,9 +378,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                             b = progress % 256;
                         }
                         MaterialColor = format("%02x%02x%02x", r, g, b).toUpperCase();
-                        colorTxt.setText(MaterialColor);
-                        colorView.setBackgroundColor(Color.argb(255, r, g, b));
-                        dcolorView.setBackgroundColor(Color.argb(255, r, g, b));
+                        dl.txtcolor.setText(MaterialColor);
+                        main.colorview.setBackgroundColor(Color.argb(255, r, g, b));
+                        dl.dcolorview.setBackgroundColor(Color.argb(255, r, g, b));
                     }
                 }
 
