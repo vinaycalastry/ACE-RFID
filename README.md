@@ -2,7 +2,7 @@
 Anycubic ACE RFID Programming.<br>
 <br>
 
-The tags required are MIFARE <a href=https://www.nxp.com/products/rfid-nfc/mifare-hf/mifare-ultralight/mifare-ultralight-c:MF0ICU2>Ultralight C</a> tags.<br>
+The tags required are MIFARE <a href=https://www.nxp.com/products/rfid-nfc/mifare-hf/mifare-ultralight/mifare-ultralight-c:MF0ICU2>Ultralight C</a> compatible tags.<br>
 <a href=https://www.nxp.com/products/NTAG213_215_216>NTAG215</a> tags have been tested and work<br><br>
 <a href=https://www.nxp.com/products/NTAG213_215_216>NTAG213</a> should work too but have not been tested by me.<br>
 Tags need at least 36 pages, 144 byte user r/w area.<br>
