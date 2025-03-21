@@ -5,6 +5,7 @@ import dngsoftware.acerfid.databinding.ActivityMainBinding;
 import dngsoftware.acerfid.databinding.PickerDialogBinding;
 import static dngsoftware.acerfid.Utils.GetMaterialLength;
 import static dngsoftware.acerfid.Utils.GetMaterialWeight;
+import static dngsoftware.acerfid.Utils.GetSku;
 import static dngsoftware.acerfid.Utils.GetTemps;
 import static dngsoftware.acerfid.Utils.SetPermissions;
 import static dngsoftware.acerfid.Utils.bytesToHex;
@@ -248,8 +249,13 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             try {
                 ultralight.connect();
                 ultralight.writePage(4, new byte[]{123, 0, 101, 0});
-                for (int i = 0; i < 10; i ++) {
-                    ultralight.writePage(5 + i, new byte[] {0, 0, 0, 0});
+                int x = 0;
+                for (int i = 0; i < 5; i ++) { //sku
+                    ultralight.writePage(5 + i, subArray(GetSku(MaterialName),x ,4));
+                    x += 4;
+                }
+                for (int i = 0; i < 5; i ++) { //brand
+                    ultralight.writePage(10 + i, new byte[] {0, 0, 0, 0});
                 }
                 byte[] matData = new byte[16];
                 Arrays.fill(matData, (byte) 0);

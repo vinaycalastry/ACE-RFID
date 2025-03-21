@@ -368,6 +368,7 @@ static const char indexData[] PROGMEM = R"==(<!DOCTYPE html>
               <option value="ASA">ASA</option>
               <option value="PETG">PETG</option>
 			  <option value="PLA">PLA</option>
+			  <option value="PLA%2B">PLA+</option>
 			  <option value="PLA Glow">PLA Glow</option>
 			  <option value="PLA High Speed">PLA High Speed</option>
 			  <option value="PLA Marble">PLA Marble</option>

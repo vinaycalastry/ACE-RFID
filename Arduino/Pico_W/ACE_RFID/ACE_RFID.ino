@@ -110,13 +110,19 @@ void loop()
   }
 
 
-  byte defaults[] = {
-    0x7B, 0x00, 0x65, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
+  byte hdrData[4] = {0x7B, 0x00, 0x65, 0x00};
+  mfrc522.MIFARE_Ultralight_Write(4, hdrData, 4);
+
+
+  byte sku[20];
+  GetSku(filamentType, sku);
+  for (int i = 0; i < 6; i++)
+  {
+    mfrc522.MIFARE_Ultralight_Write(5 + i, &sku[i * 4], 4);
+  }
+
+
+  byte brand[] = {
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
@@ -125,10 +131,11 @@ void loop()
   };
 
 
-  for (int i = 0; i < 11; i++)
+  for (int i = 0; i < 6; i++)
   {
-    mfrc522.MIFARE_Ultralight_Write(4 + i, &defaults[i * 4], 4);
+    mfrc522.MIFARE_Ultralight_Write(10 + i, &brand[i * 4], 4);
   }
+
 
   byte matData[16] = {
     0x00, 0x00, 0x00, 0x00,
@@ -136,6 +143,7 @@ void loop()
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00
   };
+
 
   for (int i = 0; i < filamentType.length(); i++) {
     matData[i] = (byte)filamentType.charAt(i);
@@ -350,12 +358,43 @@ void GetTemps(String materialName, int temps[]) {
     temps[2] = 25;
     temps[3] = 60;
   }
+  else if (materialName == "PLA+")
+  {
+    temps[0] = 210;
+    temps[1] = 230;
+    temps[2] = 45;
+    temps[3] = 60;
+  }
   else
   {
     temps[0] = 200;
     temps[1] = 210;
     temps[2] = 50;
     temps[3] = 60;
+  }
+}
+
+void GetSku(String materialName, byte sku[]) {
+  byte def [20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  byte pla [20] = {65, 72, 80, 76, 76, 66, 45, 49, 48, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  byte plap [20] = {65, 72, 80, 76, 80, 66, 82, 45, 49, 48, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  if (materialName == "PLA")
+  {
+    for (int i = 0; i < 20; i++) {
+      sku[i] = pla[i];
+    }
+  }
+  else if (materialName == "PLA+")
+  {
+    for (int i = 0; i < 20; i++) {
+      sku[i] = plap[i];
+    }
+  }
+  else
+  {
+    for (int i = 0; i < 20; i++) {
+      sku[i] = def[i];
+    }
   }
 }
 

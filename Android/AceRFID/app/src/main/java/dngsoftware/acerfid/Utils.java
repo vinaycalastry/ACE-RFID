@@ -27,6 +27,7 @@ public class Utils {
             "ASA",
             "PETG",
             "PLA",
+            "PLA+",
             "PLA Glow",
             "PLA High Speed",
             "PLA Marble",
@@ -54,6 +55,8 @@ public class Utils {
             case "PLA High Speed":
             case "PLA Glow":
                 return new int[]{190, 230, 50, 60};
+            case "PLA+":
+                return new int[]{210, 230, 45, 60};
             case "PLA Marble":
                 return new int[]{200, 230, 50, 60};
             case "PLA Matte":
@@ -67,6 +70,31 @@ public class Utils {
                 return new int[]{210, 230, 25, 60};
         }
         return new int[]{200, 210, 50, 60};
+    }
+
+    public static byte[] GetSku(String materialName) {
+        switch (materialName) {
+            case "ABS":
+            case "ASA":
+            case "PLA High Speed":
+            case "PLA Glow":
+            case "PLA Marble":
+            case "PLA Matte":
+            case "PLA SE":
+            case "PLA Silk":
+            case "PETG":
+            case "TPU":
+                return new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            case "PLA":
+                return new byte[]{65, 72, 80, 76, 76, 66,
+                        45, 49, 48, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            case "PLA+":
+                return new byte[]{65, 72, 80, 76, 80, 66,
+                        82, 45, 49, 48, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        }
+        return new byte[]{0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
 
     public static int GetMaterialLength(String materialWeight) {
