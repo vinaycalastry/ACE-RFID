@@ -34,7 +34,7 @@
 
 {"name":"ABS / ASA","dry_temperature":55,"dry_duration":8},
 
-{"name":"PA / PC","dry_temperature":55,"dry_duration":12}],
+{"name":"PA / PC","dry_temperature":55,"dry_duration":12},
 
 ```
 
@@ -47,7 +47,7 @@
 {"name":"Peach Fuzz","name_cn":"Soft Peach","value":"#FFC196","color":[255,193,150]},
 {"name":"Interstellar Violet","name_cn":"Interstellar Violet","value":"#5B618F","color":[91,97,143]},
 {"name":"Tropical Turquoise","value":"#009CBD","name_cn":"Turquoise Blue","color":[0,156,189]},
-{"name":"Spring Leaf","value":"#89A84F","name_cn":"Spring Leaf Green","color":[137,168,79]}],
+{"name":"Spring Leaf","value":"#89A84F","name_cn":"Spring Leaf Green","color":[137,168,79]},
 {"name":"Bright Red","value":"#F40031","name_cn":"Bright Red","color":[244,0,49]},
 {"name":"Orange","value":"#FF6A14","name_cn":"Orange","color":[255,106,20]},
 {"name":"Bright Orange","value":"#FFA761","name_cn":"Warm Orange","color":[255,167,97]},
@@ -71,7 +71,7 @@
 {"name":"White","value":"#FFFFFF","name_cn":"white","color":[255,255,255]},
 {"name":"Sliver","value":"#9EA6B4","name_cn":"Silver","color":[158,166,180]},
 {"name":"Grey","value":"#75787B","name_cn":"Gray","color":[117,120,123]},
-{"name":"Black","value":"#212721","name_cn":"Black","color":[33,39,33]}],
+{"name":"Black","value":"#212721","name_cn":"Black","color":[33,39,33]},
 
 ```
 
