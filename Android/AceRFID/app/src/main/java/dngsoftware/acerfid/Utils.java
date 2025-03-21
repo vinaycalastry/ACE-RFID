@@ -72,29 +72,37 @@ public class Utils {
         return new int[]{200, 210, 50, 60};
     }
 
-    public static byte[] GetSku(String materialName) {
+   public static byte[] GetSku(String materialName) {
+        String sku = null;
+        byte[] skuData = new byte[20];
+        Arrays.fill(skuData, (byte) 0);
         switch (materialName) {
             case "ABS":
-            case "ASA":
+                sku = "SHABBK-102";
+                break;
             case "PLA High Speed":
-            case "PLA Glow":
-            case "PLA Marble":
+                sku = "AHHSBK-103";
+                break;
             case "PLA Matte":
-            case "PLA SE":
+                sku = "HYGBK-102";
+                break;
             case "PLA Silk":
-            case "PETG":
+                sku = "AHSCWH-102";
+                break;
             case "TPU":
-                return new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                sku = "STPBK-101";
+                break;
             case "PLA":
-                return new byte[]{65, 72, 80, 76, 76, 66,
-                        45, 49, 48, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                sku = "AHPLBK-101";
+                break;
             case "PLA+":
-                return new byte[]{65, 72, 80, 76, 80, 66,
-                        82, 45, 49, 48, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                sku = "AHPLPBK-102";
+                break;
         }
-        return new byte[]{0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        if (sku != null) {
+            System.arraycopy(sku.getBytes(), 0, skuData, 0, sku.getBytes().length);
+        }
+        return skuData;
     }
 
     public static int GetMaterialLength(String materialWeight) {
