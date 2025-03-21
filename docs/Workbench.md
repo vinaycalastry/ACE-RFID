@@ -25,15 +25,10 @@
 ```json
 
 {"name":"PLA","dry_temperature":45,"dry_duration":4},
-
 {"name":"PLA+","dry_temperature":45,"dry_duration":4},
-
 {"name":"PETG","dry_temperature":50,"dry_duration":4},
-
 {"name":"TPU","dry_temperature":55,"dry_duration":4},
-
 {"name":"ABS / ASA","dry_temperature":55,"dry_duration":8},
-
 {"name":"PA / PC","dry_temperature":55,"dry_duration":12},
 
 ```
