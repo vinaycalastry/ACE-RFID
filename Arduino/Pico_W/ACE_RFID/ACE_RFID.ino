@@ -16,7 +16,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 WebServer webServer(80);
 
 String filamentType = "PLA";
-String filamentColor = "0000FF";
+String filamentColor = "0000FFFF";
 String filamentLen = "330";
 IPAddress Server_IP(10, 1, 0, 1);
 IPAddress Subnet_Mask(255, 255, 255, 0);
@@ -109,58 +109,28 @@ void loop()
     return;
   }
 
-
   byte hdrData[4] = {0x7B, 0x00, 0x65, 0x00};
-  mfrc522.MIFARE_Ultralight_Write(4, hdrData, 4);
-
+  WritePageData(4, hdrData, 4);
 
   byte sku[20];
+  fillArray(sku, 20);
   GetSku(filamentType, sku);
-  for (int i = 0; i < 6; i++)
-  {
-    mfrc522.MIFARE_Ultralight_Write(5 + i, &sku[i * 4], 4);
-  }
+  WritePageData(5, sku, 20);
 
+  byte brand[20];
+  fillArray(brand, 20);
+  GetBrand(filamentType, brand);
+  WritePageData(10, brand, 20);
 
-  byte brand[] = {
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00
-  };
-
-
-  for (int i = 0; i < 6; i++)
-  {
-    mfrc522.MIFARE_Ultralight_Write(10 + i, &brand[i * 4], 4);
-  }
-
-
-  byte matData[16] = {
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00
-  };
-
-
-  for (int i = 0; i < filamentType.length(); i++) {
-    matData[i] = (byte)filamentType.charAt(i);
-  }
-
-
-  for (int i = 0; i < 4; i++)
-  {
-    mfrc522.MIFARE_Ultralight_Write(15 + i, &matData[ i * 4 ], 4);
-  }
-
+  byte matData[20];
+  fillArray(matData, 20);
+  GetType(matData);
+  WritePageData(15, matData, 20);
 
   byte color[4];
   hexToByte(filamentColor.c_str(), color);
   revArray(color);
-  mfrc522.MIFARE_Ultralight_Write(20, color, 4);
-
+  WritePageData(20, color, 4);
 
   int temps[4];
   GetTemps(filamentType, temps);
@@ -171,8 +141,7 @@ void loop()
   intToByte(temps[0], extMin);
   intToByte(temps[1], extMax);
   combineArray(extMin, extMax, extTemp);
-  mfrc522.MIFARE_Ultralight_Write(24, extTemp, 4);
-
+  WritePageData(24, extTemp, 4);
 
   byte bedTemp[4];
   byte bedMin[2];
@@ -180,8 +149,7 @@ void loop()
   intToByte(temps[2], bedMin);
   intToByte(temps[3], bedMax);
   combineArray(bedMin, bedMax, bedTemp);
-  mfrc522.MIFARE_Ultralight_Write(29, bedTemp, 4);
-
+  WritePageData(29, bedTemp, 4);
 
   byte filData[4];
   byte diameter[2];
@@ -189,11 +157,10 @@ void loop()
   intToByte(175, diameter);
   intToByte(filamentLen.toInt(), length);
   combineArray(diameter, length, filData);
-  mfrc522.MIFARE_Ultralight_Write(30, filData, 4);
-
+  WritePageData(30, filData, 4);
 
   byte unkData[4] = {0xE8, 0x03, 0x00, 0x00};
-  mfrc522.MIFARE_Ultralight_Write(31, unkData, 4);
+  WritePageData(31, unkData, 4);
 
   mfrc522.PICC_HaltA();
   tone(SPK_PIN, 1000, 200);
@@ -256,7 +223,7 @@ void handleSpoolData()
 {
   if (webServer.hasArg("materialColor") && webServer.hasArg("materialType") && webServer.hasArg("materialWeight"))
   {
-    filamentColor = webServer.arg("materialColor");
+    filamentColor = webServer.arg("materialColor") + "FF";
     filamentColor.replace("#", "");
     filamentType = webServer.arg("materialType");
     filamentLen = String(GetMaterialLength(webServer.arg("materialWeight")));
@@ -273,6 +240,14 @@ void handleSpoolData()
   else
   {
     webServer.send(417, "text/plain", "Expectation Failed");
+  }
+}
+
+void WritePageData(int pageOffset, byte* pageData, int dataLength)
+{
+  for (int i = 0; i < (dataLength/4); i++)
+  {
+    mfrc522.MIFARE_Ultralight_Write(pageOffset + i, &pageData[ i * 4 ], 4);
   }
 }
 
@@ -374,27 +349,57 @@ void GetTemps(String materialName, int temps[]) {
   }
 }
 
-void GetSku(String materialName, byte sku[]) {
-  byte def [20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  byte pla [20] = {65, 72, 80, 76, 76, 66, 45, 49, 48, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  byte plap [20] = {65, 72, 80, 76, 80, 66, 82, 45, 49, 48, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  if (materialName == "PLA")
+void GetType(byte* typeData) {
+  for (int i = 0; i < filamentType.length(); i++) {
+    typeData[i] = (byte)filamentType.charAt(i);
+  }
+}
+
+void GetSku(String materialName, byte* skuData) {
+  String sku = "";
+  if (materialName == "ABS")
   {
-    for (int i = 0; i < 20; i++) {
-      sku[i] = pla[i];
-    }
+    sku = "SHABBK-102";
+  }
+  else if (materialName == "PLA High Speed")
+  {
+    sku = "AHHSBK-103";
+  }
+  else if (materialName == "PLA Matte")
+  {
+    sku = "HYGBK-102";
+  }
+  else if (materialName == "PLA Silk")
+  {
+    sku = "AHSCWH-102";
+  }
+  else if (materialName == "TPU")
+  {
+    sku = "STPBK-101";
+  }
+  else if (materialName == "PLA")
+  {
+    sku = "AHPLBK-101";
   }
   else if (materialName == "PLA+")
   {
-    for (int i = 0; i < 20; i++) {
-      sku[i] = plap[i];
-    }
+    sku = "AHPLPBK-102";
   }
-  else
+  for (int i = 0; i < sku.length(); i++) {
+    skuData[i] = (byte)sku.charAt(i);
+  }
+}
+
+void GetBrand(String materialName, byte* brandData) {
+  String brand = "";
+  if (materialName == "ABS" || materialName == "PLA High Speed" ||
+      materialName == "PLA Matte" || materialName == "PLA Silk" || materialName == "TPU" ||
+      materialName == "PLA" || materialName == "PLA+")
   {
-    for (int i = 0; i < 20; i++) {
-      sku[i] = def[i];
-    }
+    brand = "AC";
+  }
+  for (int i = 0; i < brand.length(); i++) {
+    brandData[i] = (byte)brand.charAt(i);
   }
 }
 
@@ -506,7 +511,7 @@ void loadConfig()
       }
       else
       {
-        filamentColor = "0000FF";
+        filamentColor = "0000FFFF";
       }
       if (instr(iniData, "LEN="))
       {
@@ -524,7 +529,7 @@ void loadConfig()
     File file = LittleFS.open("/spool.ini", "w");
     if (file)
     {
-      file.print("MAT=PLA\r\nCOL=0000FF\r\nLEN=330");
+      file.print("MAT=PLA\r\nCOL=0000FFFF\r\nLEN=330");
       file.close();
     }
   }
@@ -589,5 +594,11 @@ void combineArray(byte* array1, byte* array2, byte* byteArray) {
   }
   for (int i = 0; i < 2; i++) {
     byteArray[2 + i] = array2[i];
+  }
+}
+
+void fillArray(byte* array, int arraySize) {
+  for (int i = 0; i < arraySize; i++) {
+    array[i] = 0;
   }
 }
