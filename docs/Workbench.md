@@ -14,7 +14,7 @@
 {"machine_type":20025,"name":"Anycubic Kobra S1",
 "temp_limit":{"hotbed_temp_limit":[45,120],"nozzle_temp_limit":[185,320]},
 "wiki_help_url":"https://wiki.anycubic.com/en/fdm-3d-printer/kobra-s1-Combo",
-"fan_limit":[0,100],"aux_fan_speed_limit":{"hotbed_temp_limit":[45,120],"nozzle_temp_limit":[185,320]},"box_fan_level_limit":[0,100]}],
+"fan_limit":[0,100],"aux_fan_speed_limit":{"hotbed_temp_limit":[45,120],"nozzle_temp_limit":[185,320]},"box_fan_level_limit":[0,100]},
 
 ```
 

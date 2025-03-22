@@ -18,6 +18,8 @@ import android.view.MotionEvent;
 import android.widget.ImageView;
 import androidx.core.content.ContextCompat;
 
+import java.util.Arrays;
+
 
 @SuppressLint("GetInstance")
 public class Utils {
@@ -72,7 +74,7 @@ public class Utils {
         return new int[]{200, 210, 50, 60};
     }
 
-   public static byte[] GetSku(String materialName) {
+    public static byte[] GetSku(String materialName) {
         String sku = null;
         byte[] skuData = new byte[20];
         Arrays.fill(skuData, (byte) 0);
@@ -103,6 +105,27 @@ public class Utils {
             System.arraycopy(sku.getBytes(), 0, skuData, 0, sku.getBytes().length);
         }
         return skuData;
+    }
+
+    public static byte[] GetBrand(String materialName) {
+        String brand = null;
+        byte[] brandData = new byte[20];
+        Arrays.fill(brandData, (byte) 0);
+        switch (materialName) {
+            case "ABS":
+            case "PLA High Speed":
+            case "PLA Matte":
+            case "PLA Silk":
+            case "TPU":
+            case "PLA":
+            case "PLA+":
+                brand = "AC";
+                break;
+        }
+        if (brand != null) {
+            System.arraycopy(brand.getBytes(), 0, brandData, 0, brand.getBytes().length);
+        }
+        return brandData;
     }
 
     public static int GetMaterialLength(String materialWeight) {
@@ -153,7 +176,7 @@ public class Utils {
         for (byte b : data) {
             if (space) {
                 sb.append(String.format("%02X ", b));
-            }else {
+            } else {
                 sb.append(String.format("%02X", b));
             }
         }
@@ -202,7 +225,7 @@ public class Utils {
         for (byte b : revArray(byteArray)) {
             result = (result << 8) | (b & 0xFF);
         }
-       return result;
+        return result;
     }
 
     public static byte[] subArray(byte[] source, int startIndex, int length) {
@@ -244,7 +267,7 @@ public class Utils {
                 byteArray[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
                         + Character.digit(hexString.charAt(i + 1), 16));
             } catch (Exception e) {
-                return new byte[] {(byte)0xFF, (byte)0xFF, (byte)0x00, (byte)0x00};
+                return new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0x00, (byte) 0x00};
             }
         }
         return revArray(byteArray);

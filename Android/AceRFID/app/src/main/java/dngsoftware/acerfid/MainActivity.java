@@ -3,6 +3,8 @@ package dngsoftware.acerfid;
 import static java.lang.String.format;
 import dngsoftware.acerfid.databinding.ActivityMainBinding;
 import dngsoftware.acerfid.databinding.PickerDialogBinding;
+
+import static dngsoftware.acerfid.Utils.GetBrand;
 import static dngsoftware.acerfid.Utils.GetMaterialLength;
 import static dngsoftware.acerfid.Utils.GetMaterialWeight;
 import static dngsoftware.acerfid.Utils.GetSku;
@@ -249,13 +251,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             try {
                 ultralight.connect();
                 ultralight.writePage(4, new byte[]{123, 0, 101, 0});
-                int x = 0;
                 for (int i = 0; i < 5; i ++) { //sku
-                    ultralight.writePage(5 + i, subArray(GetSku(MaterialName),x ,4));
-                    x += 4;
+                    ultralight.writePage(5 + i, subArray(GetSku(MaterialName),i * 4 ,4));
                 }
                 for (int i = 0; i < 5; i ++) { //brand
-                    ultralight.writePage(10 + i, new byte[] {0, 0, 0, 0});
+                    ultralight.writePage(10 + i, subArray(GetBrand(MaterialName),i * 4 ,4));
                 }
                 byte[] matData = new byte[16];
                 Arrays.fill(matData, (byte) 0);
