@@ -20,7 +20,7 @@
         android:id="@+id/material"
         android:layout_width="200dp"
         android:layout_height="48dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
         android:spinnerMode="dialog"
         app:backgroundTint="@color/text_color"
@@ -32,7 +32,7 @@
         android:id="@+id/materialborder"
         android:layout_width="200dp"
         android:layout_height="48dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/border"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
         android:layout_width="57dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="74dp"
         android:text="@string/type"
         android:textColor="@color/text_color"
         android:textSize="18sp"
@@ -221,6 +221,43 @@
         app:layout_constraintEnd_toEndOf="@+id/colorspin"
         app:layout_constraintStart_toStartOf="@+id/lblcolor"
         app:layout_constraintTop_toBottomOf="@+id/colorspin" />
+
+    <ImageView
+        android:id="@+id/addbutton"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginEnd="-6dp"
+        android:contentDescription="@string/add"
+        app:layout_constraintEnd_toEndOf="@+id/material"
+        app:layout_constraintBottom_toTopOf="@+id/material"
+        app:srcCompat="@drawable/twotone_add_24"
+        app:tint="#1976D2" />
+
+    <ImageView
+        android:id="@+id/editbutton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="19dp"
+        android:layout_marginEnd="44dp"
+        android:contentDescription="@string/edit"
+        app:layout_constraintEnd_toStartOf="@+id/addbutton"
+        app:layout_constraintBottom_toTopOf="@+id/material"
+        app:srcCompat="@drawable/twotone_edit_24"
+        app:tint="#1976D2" />
+
+    <ImageView
+        android:id="@+id/deletebutton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="18dp"
+        android:layout_marginEnd="44dp"
+        android:contentDescription="@string/delete"
+        app:srcCompat="@drawable/twotone_delete_24"
+        app:tint="#1976D2"
+        app:layout_constraintEnd_toStartOf="@+id/editbutton"
+        app:layout_constraintBottom_toTopOf="@+id/material" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

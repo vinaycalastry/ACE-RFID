@@ -5,6 +5,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
@@ -12,32 +13,21 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import androidx.core.content.ContextCompat;
-
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 
 @SuppressLint("GetInstance")
 public class Utils {
-
-    public static String[] materialTypes = {
-            "ABS",
-            "ASA",
-            "PETG",
-            "PLA",
-            "PLA+",
-            "PLA Glow",
-            "PLA High Speed",
-            "PLA Marble",
-            "PLA Matte",
-            "PLA SE",
-            "PLA Silk",
-            "TPU"
-    };
 
     public static String[] materialWeights = {
             "1 KG",
@@ -46,87 +36,6 @@ public class Utils {
             "500 G",
             "250 G"
     };
-
-    public static int[] GetTemps(String materialName) {
-        switch (materialName) {
-            case "ABS":
-                return new int[]{220, 250, 90, 100};
-            case "ASA":
-                return new int[]{240, 280, 90, 100};
-            case "PLA":
-            case "PLA High Speed":
-            case "PLA Glow":
-                return new int[]{190, 230, 50, 60};
-            case "PLA+":
-                return new int[]{210, 230, 45, 60};
-            case "PLA Marble":
-                return new int[]{200, 230, 50, 60};
-            case "PLA Matte":
-            case "PLA SE":
-                return new int[]{190, 230, 55, 65};
-            case "PLA Silk":
-                return new int[]{200, 230, 55, 65};
-            case "PETG":
-                return new int[]{230, 250, 70, 90};
-            case "TPU":
-                return new int[]{210, 230, 25, 60};
-        }
-        return new int[]{200, 210, 50, 60};
-    }
-
-    public static byte[] GetSku(String materialName) {
-        String sku = null;
-        byte[] skuData = new byte[20];
-        Arrays.fill(skuData, (byte) 0);
-        switch (materialName) {
-            case "ABS":
-                sku = "SHABBK-102";
-                break;
-            case "PLA High Speed":
-                sku = "AHHSBK-103";
-                break;
-            case "PLA Matte":
-                sku = "HYGBK-102";
-                break;
-            case "PLA Silk":
-                sku = "AHSCWH-102";
-                break;
-            case "TPU":
-                sku = "STPBK-101";
-                break;
-            case "PLA":
-                sku = "AHPLBK-101";
-                break;
-            case "PLA+":
-                sku = "AHPLPBK-102";
-                break;
-        }
-        if (sku != null) {
-            System.arraycopy(sku.getBytes(), 0, skuData, 0, sku.getBytes().length);
-        }
-        return skuData;
-    }
-
-    public static byte[] GetBrand(String materialName) {
-        String brand = null;
-        byte[] brandData = new byte[20];
-        Arrays.fill(brandData, (byte) 0);
-        switch (materialName) {
-            case "ABS":
-            case "PLA High Speed":
-            case "PLA Matte":
-            case "PLA Silk":
-            case "TPU":
-            case "PLA":
-            case "PLA+":
-                brand = "AC";
-                break;
-        }
-        if (brand != null) {
-            System.arraycopy(brand.getBytes(), 0, brandData, 0, brand.getBytes().length);
-        }
-        return brandData;
-    }
 
     public static int GetMaterialLength(String materialWeight) {
         switch (materialWeight) {
@@ -158,6 +67,154 @@ public class Utils {
                 return "250 G";
         }
         return "1 KG";
+    }
+
+    public static void populateDatabase(MatDB db) {
+        try {
+
+            Filament filament = new Filament();
+            filament.position =  0;
+            filament.filamentID = "SHABBK-102";
+            filament.filamentName = "ABS";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "220|250|90|100";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "";
+            filament.filamentName = "ASA";
+            filament.filamentVendor = "";
+            filament.filamentParam = "240|280|90|100";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "";
+            filament.filamentName = "PETG";
+            filament.filamentVendor = "";
+            filament.filamentParam = "230|250|70|90";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "AHPLBK-101";
+            filament.filamentName = "PLA";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "190|230|50|60";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "AHPLPBK-102";
+            filament.filamentName = "PLA+";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "210|230|45|60";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "";
+            filament.filamentName = "PLA Glow";
+            filament.filamentVendor = "";
+            filament.filamentParam = "190|230|50|60";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "AHHSBK-103";
+            filament.filamentName = "PLA High Speed";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "190|230|50|60";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "";
+            filament.filamentName = "PLA Marble";
+            filament.filamentVendor = "";
+            filament.filamentParam = "200|230|50|60";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "HYGBK-102";
+            filament.filamentName = "PLA Matte";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "190|230|55|65";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "";
+            filament.filamentName = "PLA SE";
+            filament.filamentVendor = "";
+            filament.filamentParam = "190|230|55|65";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "AHSCWH-102";
+            filament.filamentName = "PLA Silk";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "200|230|55|65";
+            db.addItem(filament);
+
+            filament = new Filament();
+            filament.position = db.getItemCount();
+            filament.filamentID = "STPBK-101";
+            filament.filamentName = "TPU";
+            filament.filamentVendor = "AC";
+            filament.filamentParam = "210|230|25|60";
+            db.addItem(filament);
+
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static String[] getAllMaterials(MatDB db) {
+        List<Filament> items = db.getAllItems();
+        String[] materials = new String[items.size()];
+        for (int i = 0; i < items.size(); i++) {
+            materials[i] = items.get(i).filamentName;
+        }
+        return materials;
+    }
+
+    public static int[] GetTemps(MatDB db, String materialName) {
+        Filament item = db.getFilamentByName(materialName);
+        String[] temps = item.filamentParam.split("\\|");
+        int[] tempArray = new int[temps.length];
+        for (int i = 0; i < temps.length; i++) {
+            try {
+                tempArray[i] = Integer.parseInt(temps[i].trim());
+            } catch (Exception ignored) {
+                return new int[]{200, 210, 50, 60};
+            }
+        }
+        return tempArray;
+    }
+
+    public static byte[] GetSku(MatDB db, String materialName) {
+        byte[] skuData = new byte[20];
+        Arrays.fill(skuData, (byte) 0);
+        Filament item = db.getFilamentByName(materialName);
+        String sku = item.filamentID;
+        if (sku != null && !sku.isEmpty()) {
+            System.arraycopy(sku.getBytes(), 0, skuData, 0, sku.getBytes().length);
+        }
+        return skuData;
+    }
+
+    public static byte[] GetBrand(MatDB db, String materialName) {
+        byte[] brandData = new byte[20];
+        Arrays.fill(brandData, (byte) 0);
+        Filament item = db.getFilamentByName(materialName);
+        String brand = item.filamentVendor;
+        if (brand != null && !brand.isEmpty()) {
+            System.arraycopy(brand.getBytes(), 0, brandData, 0, brand.getBytes().length);
+        }
+        return brandData;
     }
 
     public static boolean canMfc(Context context) {
@@ -234,7 +291,7 @@ public class Utils {
         }
         int sourceLength = source.length;
         if (startIndex < 0 || startIndex >= sourceLength || length <= 0) {
-            return new byte[0]; // Return empty byte array for invalid input
+            return new byte[0];
         }
         int endIndex = Math.min(startIndex + length, sourceLength);
         int actualLength = endIndex - startIndex;
@@ -283,6 +340,14 @@ public class Utils {
         } catch (Exception e) {
             return "0000FF";
         }
+    }
+
+    public static void openUrl(Context context, String url) {
+        try {
+            Uri webpage = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            context.startActivity(intent);
+        } catch (Exception ignored) {}
     }
 
     public static float dp2Px(Context context, float dipValue) {
@@ -336,5 +401,168 @@ public class Utils {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(sKey, lValue);
         editor.apply();
+    }
+
+    public static void setVendorByItem(Spinner spinner, ArrayAdapter<String> adapter, String itemName) {
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (   itemName.startsWith(Objects.requireNonNull(adapter.getItem(i)))                     ) {
+                spinner.setSelection(i);
+                return;
+            }
+        }
+    }
+
+    public static void setTypeByItem(Spinner spinner, ArrayAdapter<String> adapter, String itemName) {
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (   itemName.contains(Objects.requireNonNull(adapter.getItem(i)))                     ) {
+                spinner.setSelection(i);
+                return;
+            }
+        }
+    }
+
+    public static String[] filamentVendors = {
+            "3Dgenius",
+            "3DJake",
+            "3DXTECH",
+            "3D BEST-Q",
+            "3D Hero",
+            "3D-Fuel",
+            "Aceaddity",
+            "AddNorth",
+            "Amazon Basics",
+            "AMOLEN",
+            "Ankermake",
+            "Anycubic",
+            "Atomic",
+            "AzureFilm",
+            "BASF",
+            "Bblife",
+            "BCN3D",
+            "Beyond Plastic",
+            "California Filament",
+            "Capricorn",
+            "CC3D",
+            "colorFabb",
+            "Comgrow",
+            "Cookiecad",
+            "Creality",
+            "CERPRiSE",
+            "Das Filament",
+            "DO3D",
+            "DOW",
+            "DSM",
+            "Duramic",
+            "ELEGOO",
+            "Eryone",
+            "Essentium",
+            "eSUN",
+            "Extrudr",
+            "Fiberforce",
+            "Fiberlogy",
+            "FilaCube",
+            "Filamentive",
+            "Fillamentum",
+            "FLASHFORGE",
+            "Formfutura",
+            "Francofil",
+            "FilamentOne",
+            "Fil X",
+            "GEEETECH",
+            "Giantarm",
+            "Gizmo Dorks",
+            "GreenGate3D",
+            "HATCHBOX",
+            "Hello3D",
+            "IC3D",
+            "IEMAI",
+            "IIID Max",
+            "INLAND",
+            "iProspect",
+            "iSANMATE",
+            "Justmaker",
+            "Keene Village Plastics",
+            "Kexcelled",
+            "LDO",
+            "MakerBot",
+            "MatterHackers",
+            "MIKA3D",
+            "NinjaTek",
+            "Nobufil",
+            "Novamaker",
+            "OVERTURE",
+            "OVVNYXE",
+            "Polymaker",
+            "Priline",
+            "Printed Solid",
+            "Protopasta",
+            "Prusament",
+            "Push Plastic",
+            "R3D",
+            "Re-pet3D",
+            "Recreus",
+            "Regen",
+            "Sain SMART",
+            "SliceWorx",
+            "Snapmaker",
+            "SnoLabs",
+            "Spectrum",
+            "SUNLU",
+            "TTYT3D",
+            "Tianse",
+            "UltiMaker",
+            "Valment",
+            "Verbatim",
+            "VO3D",
+            "Voxelab",
+            "VOXELPLA",
+            "YOOPAI",
+            "Yousu",
+            "Ziro",
+            "Zyltech"};
+
+    public static String[] filamentTypes = {
+            "ABS",
+            "ASA",
+            "HIPS",
+            "PA",
+            "PA-CF",
+            "PC",
+            "PETG",
+            "PLA",
+            "PLA-CF",
+            "PVA",
+            "PP",
+            "TPU"
+    };
+
+    public static int[] GetDefaultTemps(String materialType) {
+        switch (materialType) {
+            case "ABS":
+                return new int[]{220, 250, 90, 100};
+            case "ASA":
+                return new int[]{240, 280, 90, 100};
+            case "HIPS":
+                return new int[]{230, 245, 80, 100};
+            case "PA":
+                return new int[]{220, 250, 70, 90};
+            case "PA-CF":
+                return new int[]{260, 280, 80, 100};
+            case "PC":
+                return new int[]{260, 300, 100, 110};
+            case "PETG":
+                return new int[]{230, 250, 70, 90};
+            case "PLA":
+                return new int[]{190, 230, 50, 60};
+            case "PLA-CF":
+                return new int[]{210, 240, 45, 65};
+            case "PVA":
+                return new int[]{215, 225, 45, 60};
+            case "PP":
+                return new int[]{225, 245, 80, 105};
+            case "TPU":
+                return new int[]{210, 230, 25, 60};
+        }
+        return new int[]{185, 300, 45, 110};
     }
 }

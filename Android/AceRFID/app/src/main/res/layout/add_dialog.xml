@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4"
+    android:fillViewport="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F4F4F4"
+    android:maxWidth="500dp"
+    android:layout_gravity="center|fill_vertical"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginBottom="0dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btncls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="14dp"
+        android:text="@string/close"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/btnsave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnsave" />
+
+    <Button
+        android:id="@+id/btnsave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:padding="14dp"
+        android:text="@string/add"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btncls"
+        app:layout_constraintTop_toBottomOf="@+id/txtbedmax" />
+
+    <Spinner
+        android:id="@+id/vendor"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="96dp"
+        android:spinnerMode="dialog"
+        app:backgroundTint="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toEndOf="@+id/lblvendor"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/vendorborder"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:background="@drawable/border"
+        app:layout_constraintEnd_toEndOf="@+id/vendor"
+        app:layout_constraintTop_toTopOf="@+id/vendor"
+        app:layout_constraintStart_toStartOf="@+id/vendor"
+        app:layout_constraintBottom_toBottomOf="@+id/vendor" />
+
+    <Spinner
+        android:id="@+id/type"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:spinnerMode="dialog"
+        app:backgroundTint="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toEndOf="@+id/lbltype"
+        app:layout_constraintTop_toBottomOf="@+id/vendor" />
+
+    <View
+        android:id="@+id/typeborder"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:background="@drawable/border"
+        app:layout_constraintEnd_toEndOf="@+id/type"
+        app:layout_constraintTop_toTopOf="@+id/type"
+        app:layout_constraintStart_toStartOf="@+id/type"
+        app:layout_constraintBottom_toBottomOf="@+id/type" />
+
+    <EditText
+        android:id="@+id/txtserial"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints=""
+        android:background="@drawable/edittext"
+        android:digits="@string/alphanumeric"
+        android:ems="10"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
+        android:inputType="textVisiblePassword"
+        android:maxLength="16"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toEndOf="@+id/lblserial"
+        app:layout_constraintTop_toBottomOf="@+id/type" />
+
+    <EditText
+        android:id="@+id/txtextmin"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext"
+        android:digits="@string/numeric"
+        android:ems="4"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:importantForAutofill="no"
+        android:imeOptions="actionDone"
+        android:inputType="textVisiblePassword"
+        android:maxLength="3"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="@+id/txtserial"
+        app:layout_constraintTop_toBottomOf="@+id/txtserial" />
+
+    <EditText
+        android:id="@+id/txtextmax"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext"
+        android:digits="@string/numeric"
+        android:ems="4"
+        android:focusable="true"
+        android:importantForAutofill="no"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
+        android:inputType="textVisiblePassword"
+        android:maxLength="3"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="@+id/txtserial"
+        app:layout_constraintTop_toBottomOf="@+id/txtextmin" />
+
+    <EditText
+        android:id="@+id/txtbedmin"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext"
+        android:digits="@string/numeric"
+        android:ems="4"
+        android:focusable="true"
+        android:importantForAutofill="no"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
+        android:inputType="textVisiblePassword"
+        android:maxLength="3"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="@+id/txtserial"
+        app:layout_constraintTop_toBottomOf="@+id/txtextmax" />
+
+    <EditText
+        android:id="@+id/txtbedmax"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:importantForAutofill="no"
+        android:background="@drawable/edittext"
+        android:digits="@string/numeric"
+        android:ems="4"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
+        android:inputType="textVisiblePassword"
+        android:maxLength="3"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="@+id/txtserial"
+        app:layout_constraintTop_toBottomOf="@+id/txtbedmin" />
+
+    <TextView
+        android:id="@+id/lblvendor"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/vendor"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/vendor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vendor" />
+
+    <TextView
+        android:id="@+id/lbltype"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/type"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/type" />
+
+    <TextView
+        android:id="@+id/lblserial"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/serial"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txtserial"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txtserial" />
+
+    <TextView
+        android:id="@+id/lblextmin"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="26dp"
+        android:text="@string/extruder_min"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txtextmin"
+        app:layout_constraintTop_toTopOf="@+id/txtextmin" />
+
+    <TextView
+        android:id="@+id/lblextmax"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="26dp"
+        android:text="@string/extruder_max"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txtextmax"
+        app:layout_constraintTop_toTopOf="@+id/txtextmax" />
+
+    <TextView
+        android:id="@+id/lblbedmin"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="26dp"
+        android:text="@string/bed_min"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txtbedmin"
+        app:layout_constraintTop_toTopOf="@+id/txtbedmin" />
+
+    <TextView
+        android:id="@+id/lblbedmax"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="26dp"
+        android:text="@string/bed_max"
+        android:textColor="@color/text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txtbedmax"
+        app:layout_constraintTop_toTopOf="@+id/txtbedmax" />
+
+    <TextView
+        android:id="@+id/lbltitle"
+        android:layout_width="0dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#1976D2"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="19dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="0dp"
+        android:textColor="#82B1FF"
+        android:textSize="14sp"
+        android:text="@string/serialdesc"
+        app:layout_constraintStart_toStartOf="@id/txtserial"
+        app:layout_constraintEnd_toEndOf="@id/txtserial"
+        app:layout_constraintTop_toBottomOf="@id/txtserial" />
+
+    <ImageView
+        android:id="@+id/btnhlp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/help"
+        app:srcCompat="@drawable/twotone_help_24"
+        app:tint="#1976D2"
+        app:layout_constraintEnd_toEndOf="@id/vendor"
+        app:layout_constraintBottom_toTopOf="@id/vendor" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>

@@ -11,7 +11,7 @@ android {
         minSdk 19
         targetSdk 35
         versionCode 1
-        versionName "1.0"
+        versionName "1"
     }
 
     buildTypes {
@@ -29,6 +29,10 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    defaultConfig {
+        resConfigs "en"
+    }
 }
 
 dependencies {
@@ -36,4 +40,6 @@ dependencies {
     implementation libs.material
     implementation libs.activity.v108
     implementation libs.constraintlayout.v214
+    implementation libs.room.runtime
+    annotationProcessor libs.room.compiler
 }
