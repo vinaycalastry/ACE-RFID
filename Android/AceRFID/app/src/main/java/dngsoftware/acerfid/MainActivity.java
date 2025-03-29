@@ -11,6 +11,7 @@ import static dngsoftware.acerfid.Utils.GetMaterialWeight;
 import static dngsoftware.acerfid.Utils.GetSku;
 import static dngsoftware.acerfid.Utils.GetTemps;
 import static dngsoftware.acerfid.Utils.SetPermissions;
+import static dngsoftware.acerfid.Utils.arrayContains;
 import static dngsoftware.acerfid.Utils.bytesToHex;
 import static dngsoftware.acerfid.Utils.canMfc;
 import static dngsoftware.acerfid.Utils.dp2Px;
@@ -43,7 +44,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.MifareUltralight;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -268,14 +269,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             Toast.makeText(getApplicationContext(), R.string.no_nfc_tag_found, Toast.LENGTH_SHORT).show();
             return;
         }
-        MifareUltralight ultralight = MifareUltralight.get(tag);
-        if (ultralight != null) {
+        NfcA nfcA = NfcA.get(tag);
+        if (nfcA != null) {
             try {
-                ultralight.connect();
+                nfcA.connect();
                 byte[] data = new byte[144];
                 ByteBuffer buff = ByteBuffer.wrap(data);
                 for (int page = 4; page <= 36; page += 4) {
-                    byte[] pageData = ultralight.readPages(page);
+                    byte[] pageData = nfcA.transceive(new byte[] {(byte) 0x30, (byte)page});
                     if (pageData != null) {
                         buff.put(pageData);
                     }
@@ -305,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 Toast.makeText(getApplicationContext(), R.string.error_reading_tag, Toast.LENGTH_SHORT).show();
             } finally {
                 try {
-                    ultralight.close();
+                    nfcA.close();
                 } catch (Exception ignored) {
                 }
             }
@@ -314,51 +315,59 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         }
     }
 
+    private void nfcAWritePage(NfcA nfcA, int page, byte[] data) throws Exception {
+        byte[] cmd = new byte[6];
+        cmd[0] = (byte) 0xA2;
+        cmd[1] = (byte) page;
+        System.arraycopy(data, 0, cmd, 2, data.length);
+        nfcA.transceive(cmd);
+    }
+
     private void writeTag(Tag tag) {
         if (tag == null) {
             Toast.makeText(getApplicationContext(), R.string.no_nfc_tag_found, Toast.LENGTH_SHORT).show();
             return;
         }
-        MifareUltralight ultralight = MifareUltralight.get(tag);
-        if (ultralight != null) {
+        NfcA nfcA = NfcA.get(tag);
+        if (nfcA != null) {
             try {
-                ultralight.connect();
-                ultralight.writePage(4, new byte[]{123, 0, 101, 0});
+                nfcA.connect();
+                nfcAWritePage(nfcA, 4, new byte[]{123, 0, 101, 0});
                 for (int i = 0; i < 5; i++) { //sku
-                    ultralight.writePage(5 + i, subArray(GetSku(matDb, MaterialName), i * 4, 4));
+                    nfcAWritePage(nfcA, 5 + i, subArray(GetSku(matDb, MaterialName), i * 4, 4));
                 }
                 for (int i = 0; i < 5; i++) { //brand
-                    ultralight.writePage(10 + i, subArray(GetBrand(matDb, MaterialName), i * 4, 4));
+                    nfcAWritePage(nfcA, 10 + i, subArray(GetBrand(matDb, MaterialName), i * 4, 4));
                 }
                 byte[] matData = new byte[20];
                 Arrays.fill(matData, (byte) 0);
                 System.arraycopy(MaterialName.getBytes(), 0, matData, 0, Math.min(20, MaterialName.length()));
-                ultralight.writePage(15, subArray(matData, 0, 4));   //type
-                ultralight.writePage(16, subArray(matData, 4, 4));   //type
-                ultralight.writePage(17, subArray(matData, 8, 4));   //type
-                ultralight.writePage(18, subArray(matData, 12, 4));  //type
-                ultralight.writePage(20, parseColor(MaterialColor + "FF")); //color
+                nfcAWritePage(nfcA, 15, subArray(matData, 0, 4));   //type
+                nfcAWritePage(nfcA, 16, subArray(matData, 4, 4));   //type
+                nfcAWritePage(nfcA, 17, subArray(matData, 8, 4));   //type
+                nfcAWritePage(nfcA, 18, subArray(matData, 12, 4));  //type
+                nfcAWritePage(nfcA, 20, parseColor(MaterialColor + "FF")); //color
                 //ultralight.writePage(23, new byte[] {50, 0, 100, 0});   //more temps?
                 byte[] extTemp = new byte[4];
                 System.arraycopy(numToBytes(GetTemps(matDb, MaterialName)[0]), 0, extTemp, 0, 2); //min
                 System.arraycopy(numToBytes(GetTemps(matDb, MaterialName)[1]), 0, extTemp, 2, 2); //max
-                ultralight.writePage(24, extTemp);
+                nfcAWritePage(nfcA, 24, extTemp);
                 byte[] bedTemp = new byte[4];
                 System.arraycopy(numToBytes(GetTemps(matDb, MaterialName)[2]), 0, bedTemp, 0, 2); //min
                 System.arraycopy(numToBytes(GetTemps(matDb, MaterialName)[3]), 0, bedTemp, 2, 2); //max
-                ultralight.writePage(29, bedTemp);
+                nfcAWritePage(nfcA, 29, bedTemp);
                 byte[] filData = new byte[4];
                 System.arraycopy(numToBytes(175), 0, filData, 0, 2); //diameter
                 System.arraycopy(numToBytes(GetMaterialLength(MaterialWeight)), 0, filData, 2, 2); //length
-                ultralight.writePage(30, filData);
-                ultralight.writePage(31, new byte[]{(byte) 232, 3, 0, 0}); //?
+                nfcAWritePage(nfcA, 30, filData);
+                nfcAWritePage(nfcA, 31, new byte[]{(byte) 232, 3, 0, 0}); //?
                 playBeep();
                 Toast.makeText(getApplicationContext(), R.string.data_written_to_tag, Toast.LENGTH_SHORT).show();
             } catch (Exception ignored) {
                 Toast.makeText(getApplicationContext(), R.string.error_writing_to_tag, Toast.LENGTH_SHORT).show();
             } finally {
                 try {
-                    ultralight.close();
+                    nfcA.close();
                 } catch (Exception ignored) {
                 }
             }
@@ -490,6 +499,18 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             dl.btncls.setOnClickListener(v -> addDialog.dismiss());
             dl.btnhlp.setOnClickListener(v -> openUrl(this,getString(R.string.helpurl)));
 
+            dl.chkvendor.setOnClickListener(v -> {
+                if (dl.chkvendor.isChecked()) {
+                    dl.vendor.setVisibility(View.INVISIBLE);
+                    dl.txtvendor.setVisibility(View.VISIBLE);
+
+                } else {
+                    dl.vendor.setVisibility(View.VISIBLE);
+                    dl.txtvendor.setVisibility(View.INVISIBLE);
+
+                }
+            });
+
             if (edit) {
                 dl.btnsave.setText(R.string.save);
                 dl.lbltitle.setText(R.string.edit_filament);
@@ -504,11 +525,22 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                    Toast.makeText(getApplicationContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                    return;
                }
-               if (edit) {
-                   updateFilament(dl.vendor.getSelectedItem().toString(), dl.type.getSelectedItem().toString(), dl.txtserial.getText().toString(), dl.txtextmin.getText().toString(), dl.txtextmax.getText().toString(), dl.txtbedmin.getText().toString(), dl.txtbedmax.getText().toString());
-               } else {
-                   addFilament(dl.vendor.getSelectedItem().toString(), dl.type.getSelectedItem().toString(), dl.txtserial.getText().toString(), dl.txtextmin.getText().toString(), dl.txtextmax.getText().toString(), dl.txtbedmin.getText().toString(), dl.txtbedmax.getText().toString());
+               if (dl.chkvendor.isChecked() && dl.txtvendor.getText().toString().isEmpty()) {
+                   Toast.makeText(getApplicationContext(), R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
+                   return;
                }
+
+               String vendor = dl.vendor.getSelectedItem().toString();
+               if (dl.chkvendor.isChecked())
+               {
+                   vendor = dl.txtvendor.getText().toString().trim();
+               }
+               if (edit) {
+                   updateFilament(vendor, dl.type.getSelectedItem().toString(), dl.txtserial.getText().toString(), dl.txtextmin.getText().toString(), dl.txtextmax.getText().toString(), dl.txtbedmin.getText().toString(), dl.txtbedmax.getText().toString());
+               } else {
+                   addFilament(vendor, dl.type.getSelectedItem().toString(), dl.txtserial.getText().toString(), dl.txtextmin.getText().toString(), dl.txtextmax.getText().toString(), dl.txtbedmin.getText().toString(), dl.txtbedmax.getText().toString());
+               }
+
                addDialog.dismiss();
            });
 
@@ -543,19 +575,36 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 }
             });
 
-            if (edit){
-                setVendorByItem(dl.vendor, vadapter, MaterialName);
+            if (edit) {
                 setTypeByItem(dl.type, tadapter, MaterialName);
-                    try {
-                        dl.txtserial.setText(MaterialName.split(dl.type.getSelectedItem().toString() + " ")[1]);
-                    } catch (ArrayIndexOutOfBoundsException ignored) {
-                        dl.txtserial.setText("");
+                try {
+                    if (!arrayContains(filamentVendors, MaterialName.split(dl.type.getSelectedItem().toString() + " ")[0].trim())) {
+                        dl.chkvendor.setChecked(true);
+                        dl.txtvendor.setVisibility(View.VISIBLE);
+                        dl.vendor.setVisibility(View.INVISIBLE);
+                        dl.txtvendor.setText(MaterialName.split(dl.type.getSelectedItem().toString() + " ")[0].trim());
+                    } else {
+                        dl.chkvendor.setChecked(false);
+                        dl.txtvendor.setVisibility(View.INVISIBLE);
+                        dl.vendor.setVisibility(View.VISIBLE);
+                        setVendorByItem(dl.vendor, vadapter, MaterialName);
                     }
-                    int[] temps = GetTemps(matDb, MaterialName);
-                    dl.txtextmin.setText(String.valueOf(temps[0]));
-                    dl.txtextmax.setText(String.valueOf(temps[1]));
-                    dl.txtbedmin.setText(String.valueOf(temps[2]));
-                    dl.txtbedmax.setText(String.valueOf(temps[3]));
+                } catch (Exception ignored) {
+                    dl.chkvendor.setChecked(false);
+                    dl.txtvendor.setVisibility(View.INVISIBLE);
+                    dl.vendor.setVisibility(View.VISIBLE);
+                    dl.vendor.setSelection(0);
+                }
+                try {
+                    dl.txtserial.setText(MaterialName.split(dl.type.getSelectedItem().toString() + " ")[1]);
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                    dl.txtserial.setText("");
+                }
+                int[] temps = GetTemps(matDb, MaterialName);
+                dl.txtextmin.setText(String.valueOf(temps[0]));
+                dl.txtextmax.setText(String.valueOf(temps[1]));
+                dl.txtbedmin.setText(String.valueOf(temps[2]));
+                dl.txtbedmax.setText(String.valueOf(temps[3]));
 
             }else {
                 dl.vendor.setSelection(0);
@@ -575,7 +624,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         Filament filament = new Filament();
         filament.position =  matDb.getItemCount();
         filament.filamentID = "";
-        filament.filamentName = String.format("%s %s %s", tmpVendor, tmpType, tmpSerial);
+        filament.filamentName = String.format("%s %s %s", tmpVendor.trim(), tmpType, tmpSerial.trim());
         filament.filamentVendor = "";
         filament.filamentParam = String.format("%s|%s|%s|%s", tmpExtMin, tmpExtMax, tmpBedMin, tmpBedMax);
         matDb.addItem(filament);
@@ -589,11 +638,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         Filament filament = new Filament();
         filament.position =  tmpPosition;
         filament.filamentID = "";
-        filament.filamentName = String.format("%s %s %s", tmpVendor, tmpType, tmpSerial);
+        filament.filamentName = String.format("%s %s %s", tmpVendor.trim(), tmpType, tmpSerial.trim());
         filament.filamentVendor = "";
         filament.filamentParam = String.format("%s|%s|%s|%s", tmpExtMin, tmpExtMax, tmpBedMin, tmpBedMax);
         matDb.addItem(filament);
-        MaterialName = String.format("%s %s %s", tmpVendor, tmpType, tmpSerial);
+        MaterialName = String.format("%s %s %s", tmpVendor.trim(), tmpType, tmpSerial.trim());
         loadMaterials(true);
     }
 

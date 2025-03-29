@@ -316,6 +316,18 @@ public class Utils {
         return array;
     }
 
+    public static boolean arrayContains(String[] array, String string) {
+        if (array == null || string == null) {
+            return false;
+        }
+        for (String s : array) {
+            if (s.contains(string.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static byte[] parseColor(final String hexString) {
         int length = hexString.length();
         byte[] byteArray = new byte[length / 2];
@@ -405,7 +417,7 @@ public class Utils {
 
     public static void setVendorByItem(Spinner spinner, ArrayAdapter<String> adapter, String itemName) {
         for (int i = 0; i < adapter.getCount(); i++) {
-            if (   itemName.startsWith(Objects.requireNonNull(adapter.getItem(i)))                     ) {
+            if (itemName.startsWith(Objects.requireNonNull(adapter.getItem(i)))) {
                 spinner.setSelection(i);
                 return;
             }
@@ -414,7 +426,7 @@ public class Utils {
 
     public static void setTypeByItem(Spinner spinner, ArrayAdapter<String> adapter, String itemName) {
         for (int i = 0; i < adapter.getCount(); i++) {
-            if (   itemName.contains(Objects.requireNonNull(adapter.getItem(i)))                     ) {
+            if (itemName.contains(Objects.requireNonNull(adapter.getItem(i)))) {
                 spinner.setSelection(i);
                 return;
             }

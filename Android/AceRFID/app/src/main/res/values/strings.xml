@@ -44,4 +44,5 @@
     <string name="bed_min">Bed Min:</string>
     <string name="bed_max">Bed Max:</string>
     <string name="helpurl">https://github.com/DnG-Crafts/ACE-RFID/blob/main/docs/Filament/Filament.md</string>
+    <string name="can_t_find_vendor_i_want">Can\'t find vendor I want</string>
 </resources>
