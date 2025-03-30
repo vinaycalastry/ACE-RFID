@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F4F4"
+    android:fitsSystemWindows="true"
     android:fillViewport="true">
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -133,6 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="54dp"
+        android:singleLine="true"
         android:text="@string/color"
         android:textColor="@color/text_color"
         android:textSize="18sp"
@@ -146,6 +148,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:singleLine="true"
         android:layout_marginTop="40dp"
         android:text="@string/_00_00_00_00"
         android:textColor="@color/text_color"
@@ -155,9 +158,10 @@
 
     <TextView
         android:id="@+id/lbltagid"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:singleLine="true"
         android:text="@string/tag_id"
         android:textColor="@color/text_color"
         android:textSize="18sp"
@@ -171,14 +175,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="53dp"
         android:layout_marginEnd="90dp"
+        android:singleLine="true"
         android:padding="14dp"
         android:text="@string/read"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/writebutton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbltagid" />
+        app:layout_constraintTop_toTopOf="@+id/writebutton" />
 
     <Button
         android:id="@+id/writebutton"
@@ -187,6 +191,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="53dp"
         android:layout_marginEnd="100dp"
+        android:singleLine="true"
         android:padding="14dp"
         android:text="@string/write"
         android:textSize="16sp"
@@ -199,6 +204,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
+        android:singleLine="true"
         android:text="@string/auto_read_on_tag_scan"
         android:textColor="@color/text_color"
         android:textSize="18sp"
@@ -211,7 +217,7 @@
     <TextView
         android:id="@+id/infotext"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_marginTop="28dp"
         android:textStyle="bold"

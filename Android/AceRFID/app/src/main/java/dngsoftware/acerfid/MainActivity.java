@@ -13,7 +13,6 @@ import static dngsoftware.acerfid.Utils.GetTemps;
 import static dngsoftware.acerfid.Utils.SetPermissions;
 import static dngsoftware.acerfid.Utils.arrayContains;
 import static dngsoftware.acerfid.Utils.bytesToHex;
-import static dngsoftware.acerfid.Utils.canMfc;
 import static dngsoftware.acerfid.Utils.dp2Px;
 import static dngsoftware.acerfid.Utils.filamentTypes;
 import static dngsoftware.acerfid.Utils.filamentVendors;
@@ -106,9 +105,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
             builder.setTitle(R.string.delete_filament);
             builder.setMessage(MaterialName);
             builder.setPositiveButton(R.string.delete, (dialog, which) -> {
-                matDb.deleteItem(matDb.getFilamentByName(MaterialName));
-                loadMaterials(false);
-                dialog.dismiss();
+                if (matDb.getFilamentByName(MaterialName) != null) {
+                    matDb.deleteItem(matDb.getFilamentByName(MaterialName));
+                    loadMaterials(false);
+                    dialog.dismiss();
+                }
             });
             builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
             AlertDialog alert = builder.create();
@@ -126,9 +127,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         }
 
         SetPermissions(this);
-        if (!canMfc(this)) {
-            Toast.makeText(getApplicationContext(), R.string.this_device_does_not_support_mifare_ultralight_tags, Toast.LENGTH_SHORT).show();
-        }
 
         try {
             nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -635,14 +633,14 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         Filament currentFilament = matDb.getFilamentByName(MaterialName);
         int tmpPosition = currentFilament.position;
         matDb.deleteItem(currentFilament);
+        MaterialName = String.format("%s %s %s", tmpVendor.trim(), tmpType, tmpSerial.trim());
         Filament filament = new Filament();
         filament.position =  tmpPosition;
         filament.filamentID = "";
-        filament.filamentName = String.format("%s %s %s", tmpVendor.trim(), tmpType, tmpSerial.trim());
+        filament.filamentName = MaterialName;
         filament.filamentVendor = "";
         filament.filamentParam = String.format("%s|%s|%s|%s", tmpExtMin, tmpExtMax, tmpBedMin, tmpBedMax);
         matDb.addItem(filament);
-        MaterialName = String.format("%s %s %s", tmpVendor.trim(), tmpType, tmpSerial.trim());
         loadMaterials(true);
     }
 

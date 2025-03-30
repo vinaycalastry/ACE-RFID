@@ -217,17 +217,6 @@ public class Utils {
         return brandData;
     }
 
-    public static boolean canMfc(Context context) {
-        FeatureInfo[] info = context.getPackageManager().getSystemAvailableFeatures();
-        for (FeatureInfo i : info) {
-            String name = i.name;
-            if (name != null && name.equals("com.nxp.mifare")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static String bytesToHex(byte[] data, boolean space) {
         StringBuilder sb = new StringBuilder();
         for (byte b : data) {
