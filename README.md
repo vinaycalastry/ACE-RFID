@@ -16,7 +16,6 @@ Tags need at least 36 pages, 144 byte user r/w area.<br>
 <a href=https://github.com/DnG-Crafts/ACE-RFID/tree/main/Arduino>Arduino Code</a>
 <br>
 <br>
-
 <a href=https://github.com/DnG-Crafts/ACE-RFID/tree/main/Windows>Windows Code</a>
 <br>
 <br>
