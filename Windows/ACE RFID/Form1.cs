@@ -156,7 +156,7 @@ namespace ACE_RFID
                     int bedMin = Utils.ParseNumber(Utils.SubArray(buffer, 100, 2));
                     int bedMax = Utils.ParseNumber(Utils.SubArray(buffer, 102, 2));
 
-                    lblTemps.Text = String.Format("Extruder Temp: {0:d} min | {0:d} max\nBed Temp: {0:d} min | {0:d} max", extMin, extMax, bedMin, bedMax);
+                    lblTemps.Text = String.Format("Extruder Temp: {0:d} min | {1:d} max\nBed Temp: {2:d} min | {3:d} max", extMin, extMax, bedMin, bedMax);
 
 
                     // int diameter = Utils.ParseNumber(Utils.SubArray(buffer,104,2));
