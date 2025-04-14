@@ -1,10 +1,11 @@
 ﻿using NfcDevice;
 using System;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using System.Threading;
 using System.Media;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+
 
 namespace ACE_RFID
 {
@@ -24,18 +25,34 @@ namespace ACE_RFID
         }
 
 
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
             BackColor = ColorTranslator.FromHtml("#F4F4F4");
             lblConnect.BackColor = ColorTranslator.FromHtml("#F4F4F4");
-            button1.BackColor = ColorTranslator.FromHtml("#1976D2");
-            button2.BackColor = ColorTranslator.FromHtml("#1976D2");
+            btnRead.BackColor = ColorTranslator.FromHtml("#1976D2");
+            btnWrite.BackColor = ColorTranslator.FromHtml("#1976D2");
+            btnSave.BackColor = ColorTranslator.FromHtml("#1976D2");
+            btnCls.BackColor = ColorTranslator.FromHtml("#1976D2");
+
+            panel1.Location = new Point(0, 0);
+            lblConnect.Location = new Point(0, 0);
+
+
+            if (MatDB.GetItemCount() == 0)
+            {
+                MatDB.PopulateDatabase();
+            }
+
+            materialType.Items.AddRange(Utils.GetAllMaterials());
+            cboType.Items.AddRange(Utils.filamentTypes);
+            cboVendor.Items.AddRange(Utils.filamentVendors);
 
             materialType.Text = "PLA";
             materialWeight.Text = "1 KG";
             materialColor = "0000FF";
-            button3.BackColor = ColorTranslator.FromHtml("#" + materialColor);
+            btnColor.BackColor = ColorTranslator.FromHtml("#" + materialColor);
 
             try
             {
@@ -63,7 +80,7 @@ namespace ACE_RFID
                 reader = r;
                 Invoke((MethodInvoker)delegate ()
                 {
-                   lblUid.Text = BitConverter.ToString(acr122u.GetUID(reader)).Replace("-", " ");
+                    lblUid.Text = BitConverter.ToString(acr122u.GetUID(reader)).Replace("-", " ");
                     if (checkBox1.Checked)
                     {
                         ReadTag();
@@ -102,7 +119,7 @@ namespace ACE_RFID
 
                     byte[] buffer = new byte[144];
 
-                    new byte[] {123, 0, 101, 0}.CopyTo(buffer, 0);
+                    new byte[] { 123, 0, 101, 0 }.CopyTo(buffer, 0);
 
                     Utils.GetSku(materialType.Text).CopyTo(buffer, 4); //sku
 
@@ -149,7 +166,7 @@ namespace ACE_RFID
 
                     materialColor = Utils.ParseColor(Utils.SubArray(buffer, 65, 3));
 
-                    button3.BackColor = ColorTranslator.FromHtml("#" + materialColor);
+                    btnColor.BackColor = ColorTranslator.FromHtml("#" + materialColor);
 
                     int extMin = Utils.ParseNumber(Utils.SubArray(buffer, 80, 2));
                     int extMax = Utils.ParseNumber(Utils.SubArray(buffer, 82, 2));
@@ -169,7 +186,7 @@ namespace ACE_RFID
             {
                 ShowMsg("Error reading TAG");
             }
-            
+
         }
 
 
@@ -189,23 +206,23 @@ namespace ACE_RFID
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnRead_Click(object sender, EventArgs e)
         {
             ReadTag();
         }
 
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnWrite_Click(object sender, EventArgs e)
         {
             WriteTag();
         }
 
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btnColor_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                button3.BackColor = colorDialog1.Color;
+                btnColor.BackColor = colorDialog1.Color;
                 materialColor = (colorDialog1.Color.ToArgb() & 0x00FFFFFF).ToString("X6");
             }
         }
@@ -223,6 +240,174 @@ namespace ACE_RFID
                 SystemSounds.Beep.Play();
                 lblConnect.Visible = true;
             }
+        }
+
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                cboVendor.DropDownStyle = ComboBoxStyle.DropDown;
+                cboVendor.Text = string.Empty;
+            }
+            else
+            {
+                cboVendor.DropDownStyle = ComboBoxStyle.DropDownList;
+                cboVendor.Text = cboVendor.Items[cboVendor.SelectedIndex].ToString();
+            }
+        }
+
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            cboType.Text = cboType.Items[0].ToString();
+            cboVendor.Text = cboVendor.Items[0].ToString();
+            btnSave.Text = "Add";
+            panel1.Visible = true;
+        }
+
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            Filament filament = MatDB.GetFilamentByName(materialType.Text);
+            int pos = filament.Position;
+            if (pos > 11)
+            {
+                Utils.SetTypeByItem(cboType, filament.FilamentName);
+
+                String filamentVendor = filament.FilamentName.Split(new string[] { " " + cboType.Text + " " }, StringSplitOptions.None)[0].Trim();
+
+                if (Utils.ArrayContains(Utils.filamentVendors, filamentVendor))
+                {
+                    checkBox2.Checked = false;
+                    cboVendor.DropDownStyle = ComboBoxStyle.DropDownList;
+                    cboVendor.Text = filamentVendor;
+                }
+                else
+                {
+                    checkBox2.Checked = true;
+                    cboVendor.DropDownStyle = ComboBoxStyle.DropDown;
+                    cboVendor.Text = filamentVendor;
+                }
+
+                txtSerial.Text = filament.FilamentName.Split(new string[] { " " + cboType.Text + " " }, StringSplitOptions.None)[1].Trim();
+                txtExtMin.Text = filament.FilamentParam.Split('|')[0];
+                txtExtMax.Text = filament.FilamentParam.Split('|')[1];
+                txtBedMin.Text = filament.FilamentParam.Split('|')[2];
+                txtBedMax.Text = filament.FilamentParam.Split('|')[3];
+                btnSave.Text = "Save";
+                panel1.Visible = true;
+            }
+        }
+
+
+        private void btnDel_Click(object sender, EventArgs e)
+        {
+            int pos = MatDB.GetFilamentByName(materialType.Text).Position;
+            if (pos > 11)
+            {
+                MatDB.DeleteFilament(new Filament { Position = pos });
+                materialType.Items.Clear();
+                materialType.Items.AddRange(Utils.GetAllMaterials());
+                materialType.Text = materialType.Items[0].ToString();
+            }
+        }
+
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (cboVendor.Text.Equals(String.Empty) || cboType.Text.Equals(String.Empty) ||
+                txtSerial.Text.Equals(String.Empty) || txtExtMin.Text.Equals(String.Empty) ||
+                txtExtMax.Text.Equals(String.Empty) || txtBedMin.Text.Equals(String.Empty) || txtBedMax.Text.Equals(String.Empty))
+            {
+                MessageBox.Show("You must fill all fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            panel1.Visible = false;
+
+            if (btnSave.Text.Equals("Save"))
+            {
+                Filament filament = MatDB.GetFilamentByName(materialType.Text);
+
+                filament.FilamentId = "";
+                filament.FilamentName = cboVendor.Text.Trim() + " " + cboType.Text.Trim() + " " + txtSerial.Text.Trim();
+                filament.FilamentVendor = "";
+                filament.FilamentParam = txtExtMin.Text + "|" + txtExtMax.Text + "|" + txtBedMin.Text + "|" + txtBedMax.Text;
+
+                MatDB.UpdateFilament(filament);
+
+                materialType.Items.Clear();
+                materialType.Items.AddRange(Utils.GetAllMaterials());
+                materialType.Text = materialType.Items[filament.Position].ToString();
+
+            }
+            else
+            {
+
+                MatDB.AddFilament(new Filament { FilamentId = "", FilamentName = cboVendor.Text.Trim() + " " + cboType.Text.Trim() + " " + txtSerial.Text.Trim(), FilamentVendor = "", FilamentParam = txtExtMin.Text + "|" + txtExtMax.Text + "|" + txtBedMin.Text + "|" + txtBedMax.Text });
+                materialType.Items.Clear();
+                materialType.Items.AddRange(Utils.GetAllMaterials());
+                materialType.Text = materialType.Items[MatDB.GetItemCount() - 1].ToString();
+            }
+
+        }
+
+
+        private void materialType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (materialType.SelectedIndex > 11)
+            {
+                btnDel.Visible = true;
+                btnEdit.Visible = true;
+            }
+            else
+            {
+                btnDel.Visible = false;
+                btnEdit.Visible = false;
+            }
+
+            Filament filament = MatDB.GetFilamentByName(materialType.Text);
+            lblTemps.Text = String.Format("Extruder Temp: {0:d} min | {1:d} max\nBed Temp: {2:d} min | {3:d} max", filament.FilamentParam.Split('|')[0], filament.FilamentParam.Split('|')[1], filament.FilamentParam.Split('|')[2], filament.FilamentParam.Split('|')[3]);
+        }
+
+
+        private void btnCls_Click(object sender, EventArgs e)
+        {
+            panel1.Visible = false;
+        }
+
+
+        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtExtMin.Text = Utils.GetDefaultTemps(cboType.Text)[0].ToString();
+            txtExtMax.Text = Utils.GetDefaultTemps(cboType.Text)[1].ToString();
+            txtBedMin.Text = Utils.GetDefaultTemps(cboType.Text)[2].ToString();
+            txtBedMax.Text = Utils.GetDefaultTemps(cboType.Text)[3].ToString();
+        }
+
+
+        private void txtExtMin_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+
+        private void txtExtMax_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+
+        private void txtBedMin_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
+
+
+        private void txtBedMax_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
         }
     }
 }

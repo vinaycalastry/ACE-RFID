@@ -1,10 +1,82 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+
 
 namespace ACE_RFID
 {
     internal class Utils
     {
+
+        public static string[] GetAllMaterials()
+        {
+            List<Filament> items = MatDB.GetAllFilaments();
+            string[] materials = new string[items.Count];
+            for (int i = 0; i < items.Count; i++)
+            {
+                materials[i] = items[i].FilamentName;
+            }
+            return materials;
+        }
+
+
+        public static int[] GetTemps(string materialName)
+        {
+            Filament item = MatDB.GetFilamentByName(materialName);
+            if (item != null && !string.IsNullOrEmpty(item.FilamentParam))
+            {
+                string[] temps = item.FilamentParam.Split('|');
+                int[] tempArray = new int[temps.Length];
+                for (int i = 0; i < temps.Length; i++)
+                {
+                    if (int.TryParse(temps[i].Trim(), out int temp))
+                    {
+                        tempArray[i] = temp;
+                    }
+                    else
+                    {
+                        return new int[] { 200, 210, 50, 60 };
+                    }
+                }
+                return tempArray;
+            }
+            else
+            {
+                return new int[] { 200, 210, 50, 60 };
+            }
+        }
+
+
+
+        public static byte[] GetSku(string materialName)
+        {
+            byte[] skuData = new byte[20];
+            Filament item = MatDB.GetFilamentByName(materialName);
+            if (item != null && !string.IsNullOrEmpty(item.FilamentId))
+            {
+                byte[] skuBytes = Encoding.UTF8.GetBytes(item.FilamentId);
+                int bytesToCopy = Math.Min(skuBytes.Length, skuData.Length);
+                Array.Copy(skuBytes, 0, skuData, 0, bytesToCopy);
+            }
+            return skuData;
+        }
+
+
+        public static byte[] GetBrand(string materialName)
+        {
+            byte[] brandData = new byte[20];
+            Filament item = MatDB.GetFilamentByName(materialName);
+            if (item != null && !string.IsNullOrEmpty(item.FilamentVendor))
+            {
+                byte[] brandBytes = Encoding.UTF8.GetBytes(item.FilamentVendor);
+                int bytesToCopy = Math.Min(brandBytes.Length, brandData.Length);
+                Array.Copy(brandBytes, 0, brandData, 0, bytesToCopy);
+            }
+            return brandData;
+        }
+
 
         public static int GetMaterialLength(String materialWeight)
         {
@@ -24,6 +96,7 @@ namespace ACE_RFID
             return 330;
         }
 
+
         public static String GetMaterialWeight(int materialLength)
         {
             switch (materialLength)
@@ -42,79 +115,6 @@ namespace ACE_RFID
             return "1 KG";
         }
 
-        public static byte[] GetSku(string materialName)
-        {
-            string sku = "";
-            switch (materialName)
-            {
-                case "ABS":
-                    sku = "SHABBK-102";
-                    break;
-                case "PLA High Speed":
-                    sku = "AHHSBK-103";
-                    break;
-                case "PLA Matte":
-                    sku = "HYGBK-102";
-                    break;
-                case "PLA Silk":
-                    sku = "AHSCWH-102";
-                    break;
-                case "TPU":
-                    sku = "STPBK-101";
-                    break;
-                case "PLA":
-                    sku = "AHPLBK-101";
-                    break;
-                case "PLA+":
-                    sku = "AHPLPBK-102";
-                    break;
-                default:
-                    sku = "";
-                    break;
-            }
-            return System.Text.Encoding.ASCII.GetBytes(sku);
-        }
-
-        public static byte[] GetBrand(string materialName)
-        {
-            string brand = "";
-            if (materialName == "ABS" || materialName == "PLA High Speed" ||
-                materialName == "PLA Matte" || materialName == "PLA Silk" || materialName == "TPU" ||
-                materialName == "PLA" || materialName == "PLA+")
-            {
-                brand = "AC";
-            }
-            return System.Text.Encoding.ASCII.GetBytes(brand);
-        }
-
-        public static int[] GetTemps(string materialName)
-        {
-            switch (materialName)
-            {
-                case "ABS":
-                    return new int[] { 220, 250, 90, 100 };
-                case "ASA":
-                    return new int[] { 240, 280, 90, 100 };
-                case "PLA":
-                case "PLA High Speed":
-                case "PLA Glow":
-                    return new int[] { 190, 230, 50, 60 };
-                case "PLA Marble":
-                    return new int[] { 200, 230, 50, 60 };
-                case "PLA Matte":
-                case "PLA SE":
-                    return new int[] { 190, 230, 55, 65 };
-                case "PLA Silk":
-                    return new int[] { 200, 230, 55, 65 };
-                case "PETG":
-                    return new int[] { 230, 250, 70, 90 };
-                case "TPU":
-                    return new int[] { 210, 230, 25, 60 };
-                case "PLA+":
-                    return new int[] { 210, 230, 45, 60 };
-            }
-            return new int[] { 200, 210, 50, 60 };
-        }
 
         public static int[] GetDefaultTemps(String materialType)
         {
@@ -149,6 +149,7 @@ namespace ACE_RFID
             }
             return new int[] { 185, 300, 45, 110 };
         }
+
 
         public static String[] filamentVendors = {
             "3Dgenius",
@@ -250,6 +251,7 @@ namespace ACE_RFID
             "Ziro",
             "Zyltech"};
 
+
         public static String[] filamentTypes = {
             "ABS",
             "ASA",
@@ -264,11 +266,13 @@ namespace ACE_RFID
             "PP",
             "TPU"};
 
+
         public static byte[] RevArray(byte[] array)
         {
             Array.Reverse(array);
             return array;
         }
+
 
         public static int ParseNumber(byte[] byteArray)
         {
@@ -280,10 +284,12 @@ namespace ACE_RFID
             return result;
         }
 
+
         public static byte[] NumToBytes(int value)
         {
             return RevArray(new byte[] { (byte)(value >> 8), (byte)value });
         }
+
 
         public static byte[] ParseColor(string hexString)
         {
@@ -303,6 +309,7 @@ namespace ACE_RFID
             return RevArray(byteArray);
         }
 
+
         public static string ParseColor(byte[] byteArray)
         {
             try
@@ -319,7 +326,6 @@ namespace ACE_RFID
                 return "0000FF";
             }
         }
-
 
 
         public static byte[] SubArray(byte[] source, int startIndex, int length)
@@ -342,6 +348,28 @@ namespace ACE_RFID
             return result;
         }
 
+
+        public static bool ArrayContains(string[] array, string str)
+        {
+            if (array == null || str == null)
+            {
+                return false;
+            }
+            return array.Any(s => s != null && s.Contains(str.Trim()));
+        }
+
+
+        public static void SetTypeByItem(ComboBox comboBox, string itemName)
+        {
+            for (int i = 0; i < comboBox.Items.Count; i++)
+            {
+                if (itemName.Contains(" " + comboBox.Items[i].ToString() + " "))
+                {
+                    comboBox.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
 
     }
 }
