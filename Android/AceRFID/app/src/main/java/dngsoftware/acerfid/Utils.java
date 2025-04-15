@@ -415,7 +415,7 @@ public class Utils {
 
     public static void setTypeByItem(Spinner spinner, ArrayAdapter<String> adapter, String itemName) {
         for (int i = 0; i < adapter.getCount(); i++) {
-            if (itemName.contains(Objects.requireNonNull(adapter.getItem(i)))) {
+            if (itemName.contains(" " + Objects.requireNonNull(adapter.getItem(i)) + " ")) {
                 spinner.setSelection(i);
                 return;
             }
