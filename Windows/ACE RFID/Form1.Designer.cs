@@ -42,24 +42,24 @@
             this.lblTemps = new System.Windows.Forms.Label();
             this.lblConnect = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtBedMax = new System.Windows.Forms.TextBox();
+            this.txtBedMin = new System.Windows.Forms.TextBox();
+            this.txtExtMax = new System.Windows.Forms.TextBox();
+            this.txtExtMin = new System.Windows.Forms.TextBox();
+            this.txtSerial = new System.Windows.Forms.TextBox();
+            this.btnCls = new System.Windows.Forms.Button();
+            this.cboVendor = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.cboType = new System.Windows.Forms.ComboBox();
-            this.cboVendor = new System.Windows.Forms.ComboBox();
-            this.txtSerial = new System.Windows.Forms.TextBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDel = new System.Windows.Forms.Button();
-            this.btnCls = new System.Windows.Forms.Button();
-            this.txtExtMin = new System.Windows.Forms.TextBox();
-            this.txtExtMax = new System.Windows.Forms.TextBox();
-            this.txtBedMin = new System.Windows.Forms.TextBox();
-            this.txtBedMax = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -219,6 +219,125 @@
             this.panel1.TabIndex = 16;
             this.panel1.Visible = false;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(63, 397);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 20);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Bed Max:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(63, 362);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(79, 20);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Bed Min:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(60, 327);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(119, 20);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Extruder Max:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(60, 291);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(115, 20);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Extruder Min:";
+            // 
+            // txtBedMax
+            // 
+            this.txtBedMax.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtBedMax.Location = new System.Drawing.Point(206, 395);
+            this.txtBedMax.MaxLength = 3;
+            this.txtBedMax.Name = "txtBedMax";
+            this.txtBedMax.Size = new System.Drawing.Size(117, 26);
+            this.txtBedMax.TabIndex = 12;
+            this.txtBedMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBedMax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBedMax_KeyPress);
+            // 
+            // txtBedMin
+            // 
+            this.txtBedMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtBedMin.Location = new System.Drawing.Point(206, 360);
+            this.txtBedMin.MaxLength = 3;
+            this.txtBedMin.Name = "txtBedMin";
+            this.txtBedMin.Size = new System.Drawing.Size(117, 26);
+            this.txtBedMin.TabIndex = 11;
+            this.txtBedMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBedMin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBedMin_KeyPress);
+            // 
+            // txtExtMax
+            // 
+            this.txtExtMax.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtExtMax.Location = new System.Drawing.Point(206, 325);
+            this.txtExtMax.MaxLength = 3;
+            this.txtExtMax.Name = "txtExtMax";
+            this.txtExtMax.Size = new System.Drawing.Size(117, 26);
+            this.txtExtMax.TabIndex = 10;
+            this.txtExtMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtExtMax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtExtMax_KeyPress);
+            // 
+            // txtExtMin
+            // 
+            this.txtExtMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtExtMin.Location = new System.Drawing.Point(206, 289);
+            this.txtExtMin.MaxLength = 3;
+            this.txtExtMin.Name = "txtExtMin";
+            this.txtExtMin.Size = new System.Drawing.Size(117, 26);
+            this.txtExtMin.TabIndex = 9;
+            this.txtExtMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtExtMin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtExtMin_KeyPress);
+            // 
+            // txtSerial
+            // 
+            this.txtSerial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSerial.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSerial.Location = new System.Drawing.Point(64, 215);
+            this.txtSerial.Name = "txtSerial";
+            this.txtSerial.Size = new System.Drawing.Size(259, 35);
+            this.txtSerial.TabIndex = 2;
+            this.txtSerial.WordWrap = false;
+            // 
+            // btnCls
+            // 
+            this.btnCls.BackColor = System.Drawing.Color.RoyalBlue;
+            this.btnCls.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCls.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCls.ForeColor = System.Drawing.Color.White;
+            this.btnCls.Location = new System.Drawing.Point(64, 456);
+            this.btnCls.Name = "btnCls";
+            this.btnCls.Size = new System.Drawing.Size(104, 49);
+            this.btnCls.TabIndex = 8;
+            this.btnCls.Text = "Cancel";
+            this.btnCls.UseVisualStyleBackColor = false;
+            this.btnCls.Click += new System.EventHandler(this.btnCls_Click);
+            // 
+            // cboVendor
+            // 
+            this.cboVendor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboVendor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cboVendor.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboVendor.FormattingEnabled = true;
+            this.cboVendor.Location = new System.Drawing.Point(64, 67);
+            this.cboVendor.Name = "cboVendor";
+            this.cboVendor.Size = new System.Drawing.Size(259, 37);
+            this.cboVendor.TabIndex = 3;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -245,18 +364,6 @@
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox2.Location = new System.Drawing.Point(67, 111);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(225, 24);
-            this.checkBox2.TabIndex = 5;
-            this.checkBox2.Text = "Can\'t find vendor I want";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
-            // 
             // cboType
             // 
             this.cboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -269,26 +376,17 @@
             this.cboType.TabIndex = 4;
             this.cboType.SelectedIndexChanged += new System.EventHandler(this.cboType_SelectedIndexChanged);
             // 
-            // cboVendor
+            // checkBox2
             // 
-            this.cboVendor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboVendor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cboVendor.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboVendor.FormattingEnabled = true;
-            this.cboVendor.Location = new System.Drawing.Point(64, 67);
-            this.cboVendor.Name = "cboVendor";
-            this.cboVendor.Size = new System.Drawing.Size(259, 37);
-            this.cboVendor.TabIndex = 3;
-            // 
-            // txtSerial
-            // 
-            this.txtSerial.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSerial.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSerial.Location = new System.Drawing.Point(64, 215);
-            this.txtSerial.Name = "txtSerial";
-            this.txtSerial.Size = new System.Drawing.Size(259, 35);
-            this.txtSerial.TabIndex = 2;
-            this.txtSerial.WordWrap = false;
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox2.Location = new System.Drawing.Point(67, 111);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(225, 24);
+            this.checkBox2.TabIndex = 5;
+            this.checkBox2.Text = "Can\'t find vendor I want";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // btnAdd
             // 
@@ -325,104 +423,6 @@
             this.btnDel.TabIndex = 20;
             this.btnDel.UseVisualStyleBackColor = true;
             this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
-            // 
-            // btnCls
-            // 
-            this.btnCls.BackColor = System.Drawing.Color.RoyalBlue;
-            this.btnCls.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCls.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCls.ForeColor = System.Drawing.Color.White;
-            this.btnCls.Location = new System.Drawing.Point(64, 456);
-            this.btnCls.Name = "btnCls";
-            this.btnCls.Size = new System.Drawing.Size(104, 49);
-            this.btnCls.TabIndex = 8;
-            this.btnCls.Text = "Cancel";
-            this.btnCls.UseVisualStyleBackColor = false;
-            this.btnCls.Click += new System.EventHandler(this.btnCls_Click);
-            // 
-            // txtExtMin
-            // 
-            this.txtExtMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtExtMin.Location = new System.Drawing.Point(206, 289);
-            this.txtExtMin.MaxLength = 3;
-            this.txtExtMin.Name = "txtExtMin";
-            this.txtExtMin.Size = new System.Drawing.Size(117, 26);
-            this.txtExtMin.TabIndex = 9;
-            this.txtExtMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtExtMin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtExtMin_KeyPress);
-            // 
-            // txtExtMax
-            // 
-            this.txtExtMax.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtExtMax.Location = new System.Drawing.Point(206, 325);
-            this.txtExtMax.MaxLength = 3;
-            this.txtExtMax.Name = "txtExtMax";
-            this.txtExtMax.Size = new System.Drawing.Size(117, 26);
-            this.txtExtMax.TabIndex = 10;
-            this.txtExtMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtExtMax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtExtMax_KeyPress);
-            // 
-            // txtBedMin
-            // 
-            this.txtBedMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtBedMin.Location = new System.Drawing.Point(206, 360);
-            this.txtBedMin.MaxLength = 3;
-            this.txtBedMin.Name = "txtBedMin";
-            this.txtBedMin.Size = new System.Drawing.Size(117, 26);
-            this.txtBedMin.TabIndex = 11;
-            this.txtBedMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtBedMin.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBedMin_KeyPress);
-            // 
-            // txtBedMax
-            // 
-            this.txtBedMax.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtBedMax.Location = new System.Drawing.Point(206, 395);
-            this.txtBedMax.MaxLength = 3;
-            this.txtBedMax.Name = "txtBedMax";
-            this.txtBedMax.Size = new System.Drawing.Size(117, 26);
-            this.txtBedMax.TabIndex = 12;
-            this.txtBedMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtBedMax.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBedMax_KeyPress);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(60, 291);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(115, 20);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Extruder Min:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(60, 327);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(119, 20);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Extruder Max:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(63, 362);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(79, 20);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Bed Min:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(63, 397);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(83, 20);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "Bed Max:";
             // 
             // Form1
             // 

@@ -89,16 +89,18 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
         main = ActivityMainBinding.inflate(getLayoutInflater());
         View rv = main.getRoot();
         setContentView(rv);
+        main.addbutton.setVisibility(View.INVISIBLE);
         main.editbutton.setVisibility(View.INVISIBLE);
         main.deletebutton.setVisibility(View.INVISIBLE);
+
 
         main.colorview.setOnClickListener(view -> openPicker());
         main.colorview.setBackgroundColor(Color.argb(255, 0, 0, 255));
         main.readbutton.setOnClickListener(view -> readTag(currentTag));
         main.writebutton.setOnClickListener(view -> writeTag(currentTag));
 
-        main.addbutton.setOnClickListener(view -> openAddDialog(false));
-        main.editbutton.setOnClickListener(view -> openAddDialog(true));
+       // main.addbutton.setOnClickListener(view -> openAddDialog(false));
+      //  main.editbutton.setOnClickListener(view -> openAddDialog(true));
 
         main.deletebutton.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -225,13 +227,15 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Reader
                 assert MaterialName != null;
                 main.infotext.setText(String.format(Locale.getDefault(), getString(R.string.info_temps),
                         GetTemps(matDb, MaterialName)[0], GetTemps(matDb, MaterialName)[1], GetTemps(matDb, MaterialName)[2], GetTemps(matDb, MaterialName)[3]));
+
                 if (position <= 11){
-                    main.editbutton.setVisibility(View.INVISIBLE);
+                  //  main.editbutton.setVisibility(View.INVISIBLE);
                     main.deletebutton.setVisibility(View.INVISIBLE);
                 }else {
-                    main.editbutton.setVisibility(View.VISIBLE);
+                   // main.editbutton.setVisibility(View.VISIBLE);
                     main.deletebutton.setVisibility(View.VISIBLE);
                 }
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {

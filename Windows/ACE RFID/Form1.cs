@@ -36,6 +36,10 @@ namespace ACE_RFID
             btnSave.BackColor = ColorTranslator.FromHtml("#1976D2");
             btnCls.BackColor = ColorTranslator.FromHtml("#1976D2");
 
+            btnAdd.Visible = false;
+            btnDel.Visible = false;
+            btnEdit.Visible = false;
+
             panel1.Location = new Point(0, 0);
             lblConnect.Location = new Point(0, 0);
 
@@ -306,10 +310,14 @@ namespace ACE_RFID
             int pos = MatDB.GetFilamentByName(materialType.Text).Position;
             if (pos > 11)
             {
-                MatDB.DeleteFilament(new Filament { Position = pos });
-                materialType.Items.Clear();
-                materialType.Items.AddRange(Utils.GetAllMaterials());
-                materialType.Text = materialType.Items[0].ToString();
+                DialogResult result = MessageBox.Show("Are you sure you want to delete\n\n    " + materialType.Text, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    MatDB.DeleteFilament(new Filament { Position = pos });
+                    materialType.Items.Clear();
+                    materialType.Items.AddRange(Utils.GetAllMaterials());
+                    materialType.Text = materialType.Items[0].ToString();
+                }
             }
         }
 
@@ -358,13 +366,13 @@ namespace ACE_RFID
         {
             if (materialType.SelectedIndex > 11)
             {
-                btnDel.Visible = true;
-                btnEdit.Visible = true;
+               // btnDel.Visible = true;
+               // btnEdit.Visible = true;
             }
             else
             {
-                btnDel.Visible = false;
-                btnEdit.Visible = false;
+              //  btnDel.Visible = false;
+              //  btnEdit.Visible = false;
             }
 
             Filament filament = MatDB.GetFilamentByName(materialType.Text);
