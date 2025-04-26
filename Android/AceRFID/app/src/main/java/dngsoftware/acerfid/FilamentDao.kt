@@ -11,11 +11,11 @@ interface FilamentDao {
     @Insert
     fun addItem(item: Filament)
 
+    @Insert
+    fun addItems(items: List<Filament>)
+
     @Update
     fun updateItem(item: Filament)
-
-    @Query("UPDATE filaments SET filament_position =:pos WHERE filament_id =:filamentID")
-    fun updatePosition(pos: Int, filamentID: String?)
 
     @Delete
     fun deleteItem(item: Filament)
@@ -23,13 +23,13 @@ interface FilamentDao {
     @get:Query("SELECT COUNT(id) FROM filaments")
     val itemCount: Int
 
-    @get:Query("SELECT * FROM filaments ORDER BY filament_position ASC")
+    @get:Query("SELECT * FROM filaments ORDER BY filament_name ASC")
     val allItems: List<Filament>
 
     @Query("DELETE FROM filaments")
     fun deleteAll()
 
-    @Query("SELECT * FROM filaments  WHERE filament_vendor = :filamentVendor ORDER BY filament_position ASC")
+    @Query("SELECT * FROM filaments  WHERE filament_vendor = :filamentVendor ORDER BY filament_name ASC")
     fun getFilamentsByVendor(filamentVendor: String?): List<Filament?>?
 
     @Query("SELECT * FROM filaments WHERE filament_id = :filamentID")

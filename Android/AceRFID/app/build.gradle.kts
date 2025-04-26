@@ -11,8 +11,8 @@ android {
         applicationId = "dngsoftware.acerfid"
         minSdk = 21
         targetSdk = 35
-        versionCode = 1
-        versionName = "1"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     buildTypes {
@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.room.runtime.android)
+    implementation(libs.gson)
     kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

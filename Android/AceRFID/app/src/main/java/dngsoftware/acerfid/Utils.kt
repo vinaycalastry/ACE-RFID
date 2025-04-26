@@ -25,133 +25,9 @@ import androidx.core.content.edit
 
 @SuppressLint("GetInstance")
 object Utils {
-    var materialWeights: Array<String> = arrayOf(
-        "1 KG",
-        "750 G",
-        "600 G",
-        "500 G",
-        "250 G"
-    )
-
-    fun GetMaterialLength(materialWeight: String): Int {
-        when (materialWeight) {
-            "1 KG" -> return 330
-            "750 G" -> return 247
-            "600 G" -> return 198
-            "500 G" -> return 165
-            "250 G" -> return 82
-        }
-        return 330
-    }
-
-    fun GetMaterialWeight(materialLength: Int): String {
-        when (materialLength) {
-            330 -> return "1 KG"
-            247 -> return "750 G"
-            198 -> return "600 G"
-            165 -> return "500 G"
-            82 -> return "250 G"
-        }
-        return "1 KG"
-    }
-
     fun populateDatabase(db: FilamentDao) {
         try {
-            var filament = Filament()
-            filament.position = 0
-            filament.filamentID = "SHABBK-102"
-            filament.filamentName = "ABS"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "220|250|90|100"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = ""
-            filament.filamentName = "ASA"
-            filament.filamentVendor = ""
-            filament.filamentParam = "240|280|90|100"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = ""
-            filament.filamentName = "PETG"
-            filament.filamentVendor = ""
-            filament.filamentParam = "230|250|70|90"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = "AHPLBK-101"
-            filament.filamentName = "PLA"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "190|230|50|60"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = "AHPLPBK-102"
-            filament.filamentName = "PLA+"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "210|230|45|60"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = ""
-            filament.filamentName = "PLA Glow"
-            filament.filamentVendor = ""
-            filament.filamentParam = "190|230|50|60"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = "AHHSBK-103"
-            filament.filamentName = "PLA High Speed"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "190|230|50|60"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = ""
-            filament.filamentName = "PLA Marble"
-            filament.filamentVendor = ""
-            filament.filamentParam = "200|230|50|60"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = "HYGBK-102"
-            filament.filamentName = "PLA Matte"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "190|230|55|65"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = ""
-            filament.filamentName = "PLA SE"
-            filament.filamentVendor = ""
-            filament.filamentParam = "190|230|55|65"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = "AHSCWH-102"
-            filament.filamentName = "PLA Silk"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "200|230|55|65"
-            db.addItem(filament)
-
-            filament = Filament()
-            filament.position = db.itemCount
-            filament.filamentID = "STPBK-101"
-            filament.filamentName = "TPU"
-            filament.filamentVendor = "AC"
-            filament.filamentParam = "210|230|25|60"
-            db.addItem(filament)
+            db.addItems(Constants.defaultFilamentList)
         } catch (ignored: Exception) {
         }
     }
@@ -167,19 +43,8 @@ object Utils {
         return materials
     }
 
-    fun GetTemps(db: FilamentDao, materialName: String?): IntArray {
-        val item = db.getFilamentByName(materialName)
-        val temps = item?.filamentParam!!.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
-        val tempArray = IntArray(temps.size)
-        for (i in temps.indices) {
-            try {
-                tempArray[i] = temps[i].trim { it <= ' ' }.toInt()
-            } catch (ignored: Exception) {
-                return intArrayOf(200, 210, 50, 60)
-            }
-        }
-        return tempArray
+    fun GetTemps(db: FilamentDao, materialName: String?): FilamentTemperature {
+        return db.getFilamentByName(materialName)?.filamentParam!!.filamentTemperatures!!
     }
 
     fun GetSku(db: FilamentDao, materialName: String?): ByteArray {
@@ -296,11 +161,11 @@ object Utils {
         return array
     }
 
-    fun arrayContains(array: Array<String>?, string: String?): Boolean {
-        if (array == null || string == null) {
+    fun listContains(list: List<String>?, string: String?): Boolean {
+        if (list == null || string == null) {
             return false
         }
-        for (s in array) {
+        for (s in list) {
             if (s.contains(string.trim { it <= ' ' })) {
                 return true
             }
@@ -414,139 +279,5 @@ object Utils {
                 return
             }
         }
-    }
-
-    var filamentVendors: Array<String> = arrayOf(
-        "3Dgenius",
-        "3DJake",
-        "3DXTECH",
-        "3D BEST-Q",
-        "3D Hero",
-        "3D-Fuel",
-        "Aceaddity",
-        "AddNorth",
-        "Amazon Basics",
-        "AMOLEN",
-        "Ankermake",
-        "Anycubic",
-        "Atomic",
-        "AzureFilm",
-        "BASF",
-        "Bblife",
-        "BCN3D",
-        "Beyond Plastic",
-        "California Filament",
-        "Capricorn",
-        "CC3D",
-        "colorFabb",
-        "Comgrow",
-        "Cookiecad",
-        "Creality",
-        "CERPRiSE",
-        "Das Filament",
-        "DO3D",
-        "DOW",
-        "DSM",
-        "Duramic",
-        "ELEGOO",
-        "Eryone",
-        "Essentium",
-        "eSUN",
-        "Extrudr",
-        "Fiberforce",
-        "Fiberlogy",
-        "FilaCube",
-        "Filamentive",
-        "Fillamentum",
-        "FLASHFORGE",
-        "Formfutura",
-        "Francofil",
-        "FilamentOne",
-        "Fil X",
-        "GEEETECH",
-        "Giantarm",
-        "Gizmo Dorks",
-        "GreenGate3D",
-        "HATCHBOX",
-        "Hello3D",
-        "IC3D",
-        "IEMAI",
-        "IIID Max",
-        "INLAND",
-        "iProspect",
-        "iSANMATE",
-        "Justmaker",
-        "Keene Village Plastics",
-        "Kexcelled",
-        "LDO",
-        "MakerBot",
-        "MatterHackers",
-        "MIKA3D",
-        "NinjaTek",
-        "Nobufil",
-        "Novamaker",
-        "OVERTURE",
-        "OVVNYXE",
-        "Polymaker",
-        "Priline",
-        "Printed Solid",
-        "Protopasta",
-        "Prusament",
-        "Push Plastic",
-        "R3D",
-        "Re-pet3D",
-        "Recreus",
-        "Regen",
-        "Sain SMART",
-        "SliceWorx",
-        "Snapmaker",
-        "SnoLabs",
-        "Spectrum",
-        "SUNLU",
-        "TTYT3D",
-        "Tianse",
-        "UltiMaker",
-        "Valment",
-        "Verbatim",
-        "VO3D",
-        "Voxelab",
-        "VOXELPLA",
-        "YOOPAI",
-        "Yousu",
-        "Ziro",
-        "Zyltech"
-    )
-
-    var filamentTypes: Array<String> = arrayOf(
-        "ABS",
-        "ASA",
-        "HIPS",
-        "PA",
-        "PA-CF",
-        "PC",
-        "PETG",
-        "PLA",
-        "PLA-CF",
-        "PVA",
-        "PP",
-        "TPU"
-    )
-
-    fun GetDefaultTemps(materialType: String): IntArray {
-        when (materialType) {
-            "ABS" -> return intArrayOf(220, 250, 90, 100)
-            "ASA" -> return intArrayOf(240, 280, 90, 100)
-            "HIPS" -> return intArrayOf(230, 245, 80, 100)
-            "PA" -> return intArrayOf(220, 250, 70, 90)
-            "PA-CF" -> return intArrayOf(260, 280, 80, 100)
-            "PC" -> return intArrayOf(260, 300, 100, 110)
-            "PETG" -> return intArrayOf(230, 250, 70, 90)
-            "PLA" -> return intArrayOf(190, 230, 50, 60)
-            "PLA-CF" -> return intArrayOf(210, 240, 45, 65)
-            "PVA" -> return intArrayOf(215, 225, 45, 60)
-            "PP" -> return intArrayOf(225, 245, 80, 105)
-            "TPU" -> return intArrayOf(210, 230, 25, 60)
-        }
-        return intArrayOf(185, 300, 45, 110)
     }
 }

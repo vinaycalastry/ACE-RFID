@@ -29,22 +29,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room.databaseBuilder
 import dngsoftware.acerfid.Utils.GetBrand
-import dngsoftware.acerfid.Utils.GetDefaultTemps
-import dngsoftware.acerfid.Utils.GetMaterialLength
-import dngsoftware.acerfid.Utils.GetMaterialWeight
 import dngsoftware.acerfid.Utils.GetSetting
 import dngsoftware.acerfid.Utils.GetSku
 import dngsoftware.acerfid.Utils.GetTemps
 import dngsoftware.acerfid.Utils.SaveSetting
 import dngsoftware.acerfid.Utils.SetPermissions
-import dngsoftware.acerfid.Utils.arrayContains
 import dngsoftware.acerfid.Utils.bytesToHex
 import dngsoftware.acerfid.Utils.dp2Px
-import dngsoftware.acerfid.Utils.filamentTypes
-import dngsoftware.acerfid.Utils.filamentVendors
 import dngsoftware.acerfid.Utils.getAllMaterials
 import dngsoftware.acerfid.Utils.getPixelColor
-import dngsoftware.acerfid.Utils.materialWeights
 import dngsoftware.acerfid.Utils.numToBytes
 import dngsoftware.acerfid.Utils.openUrl
 import dngsoftware.acerfid.Utils.parseColor
@@ -64,6 +57,7 @@ import java.util.Locale
 import java.util.Objects
 import kotlin.math.min
 import androidx.core.graphics.toColorInt
+import dngsoftware.acerfid.Utils.listContains
 
 class MainActivity : AppCompatActivity(), ReaderCallback {
     private var filamentDao: FilamentDao? = null
@@ -102,8 +96,8 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
         main!!.readbutton.setOnClickListener { view -> readTag(currentTag) }
         main!!.writebutton.setOnClickListener { view -> writeTag(currentTag) }
 
-        // main.addbutton.setOnClickListener(view -> openAddDialog(false));
-        //  main.editbutton.setOnClickListener(view -> openAddDialog(true));
+        main!!.addbutton.setOnClickListener { view -> openAddDialog(false) }
+        main!!.editbutton.setOnClickListener { view -> openAddDialog(true) }
         main!!.deletebutton.setOnClickListener { view ->
             val builder =
                 AlertDialog.Builder(this)
@@ -153,7 +147,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
         } catch (ignored: Exception) {
         }
 
-        sadapter = ArrayAdapter<String>(this, R.layout.spinner_item, materialWeights)
+        sadapter = ArrayAdapter<String>(this, R.layout.spinner_item, Constants.materialWeights)
         main!!.spoolsize.adapter = sadapter
         main!!.spoolsize.setSelection(SelectedSize)
         main!!.spoolsize.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -246,19 +240,14 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                     java.lang.String.format(
                         Locale.getDefault(),
                         getString(R.string.info_temps),
-                        GetTemps(filamentDao!!, MaterialName).get(0),
-                        GetTemps(filamentDao!!, MaterialName).get(1),
-                        GetTemps(filamentDao!!, MaterialName).get(2),
-                        GetTemps(filamentDao!!, MaterialName).get(3)
+                        GetTemps(filamentDao!!, MaterialName).extruderMinTemp,
+                        GetTemps(filamentDao!!, MaterialName).extruderMaxTemp,
+                        GetTemps(filamentDao!!, MaterialName).bedMinTemp,
+                        GetTemps(filamentDao!!, MaterialName).bedMaxTemp,
                     )
 
-                if (position <= 11) {
-                    //  main.editbutton.setVisibility(View.INVISIBLE);
-                    main!!.deletebutton.visibility = View.INVISIBLE
-                } else {
-                    // main.editbutton.setVisibility(View.VISIBLE);
-                    main!!.deletebutton.visibility = View.VISIBLE
-                }
+                main!!.editbutton.setVisibility(View.VISIBLE)
+                main!!.deletebutton.setVisibility(View.VISIBLE)
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {
@@ -267,7 +256,8 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
         if (select) {
             main!!.material.setSelection(madapter!!.getPosition(MaterialName))
         } else {
-            main!!.material.setSelection(3)
+            val defaultFilamentName = Constants.defaultFilamentList.first { it.isDefault }.filamentName
+            main!!.material.setSelection(madapter!!.getPosition(defaultFilamentName))
         }
     }
 
@@ -335,7 +325,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                         bedMax
                     )
                     // int diameter = parseNumber(subArray(buff.array(),104,2));
-                    MaterialWeight = GetMaterialWeight(parseNumber(subArray(buff.array(), 106, 2)))
+                    MaterialWeight = Constants.GetMaterialWeight(parseNumber(subArray(buff.array(), 106, 2)))
                     main!!.spoolsize.setSelection(sadapter!!.getPosition(MaterialWeight))
                     Toast.makeText(
                         applicationContext,
@@ -413,7 +403,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                 nfcAWritePage(nfcA, 20, parseColor(MaterialColor + "FF")!!) //color
                 //ultralight.writePage(23, new byte[] {50, 0, 100, 0});   //more temps?
                 val extTemp = ByteArray(4)
-                numToBytes(GetTemps(filamentDao!!, MaterialName).get(0))?.let {
+                numToBytes(GetTemps(filamentDao!!, MaterialName).extruderMinTemp!!)?.let {
                     System.arraycopy(
                         it,
                         0,
@@ -422,7 +412,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                         2
                     )
                 } //min
-                numToBytes(GetTemps(filamentDao!!, MaterialName).get(1))?.let {
+                numToBytes(GetTemps(filamentDao!!, MaterialName).extruderMaxTemp!!)?.let {
                     System.arraycopy(
                         it,
                         0,
@@ -433,7 +423,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                 } //max
                 nfcAWritePage(nfcA, 24, extTemp)
                 val bedTemp = ByteArray(4)
-                numToBytes(GetTemps(filamentDao!!, MaterialName).get(2))?.let {
+                numToBytes(GetTemps(filamentDao!!, MaterialName).bedMinTemp!!)?.let {
                     System.arraycopy(
                         it,
                         0,
@@ -442,7 +432,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                         2
                     )
                 } //min
-                numToBytes(GetTemps(filamentDao!!, MaterialName).get(3))?.let {
+                numToBytes(GetTemps(filamentDao!!, MaterialName).bedMaxTemp!!)?.let {
                     System.arraycopy(
                         it,
                         0,
@@ -454,7 +444,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                 nfcAWritePage(nfcA, 29, bedTemp)
                 val filData = ByteArray(4)
                 numToBytes(175)?.let { System.arraycopy(it, 0, filData, 0, 2) } //diameter
-                numToBytes(GetMaterialLength(MaterialWeight!!))?.let {
+                numToBytes(Constants.GetMaterialLength(MaterialWeight!!))?.let {
                     System.arraycopy(
                         it,
                         0,
@@ -709,10 +699,10 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                 addDialog!!.dismiss()
             }
 
-            val vadapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.spinner_item, filamentVendors)
+            val vadapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.spinner_item, Constants.filamentVendors)
             dl.vendor.adapter = vadapter
 
-            val tadapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.spinner_item, filamentTypes)
+            val tadapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.spinner_item, Constants.filamentTypes)
             dl.type.adapter = tadapter
 
             dl.type.setOnTouchListener { v, event ->
@@ -730,11 +720,11 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                 ) {
                     if (userSelect) {
                         val tmpType = Objects.requireNonNull(tadapter.getItem(position))!!
-                        val temps: IntArray = GetDefaultTemps(tmpType)
-                        dl.txtextmin.setText(temps[0].toString())
-                        dl.txtextmax.setText(temps[1].toString())
-                        dl.txtbedmin.setText(temps[2].toString())
-                        dl.txtbedmax.setText(temps[3].toString())
+                        val temps: FilamentTemperature = Constants.GetDefaultTemps(tmpType)
+                        dl.txtextmin.setText(temps.extruderMinTemp.toString())
+                        dl.txtextmax.setText(temps.extruderMaxTemp.toString())
+                        dl.txtbedmin.setText(temps.bedMinTemp.toString())
+                        dl.txtbedmax.setText(temps.bedMaxTemp.toString())
                         userSelect = false
                     }
                 }
@@ -747,8 +737,8 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
             if (edit) {
                 setTypeByItem(dl.type, tadapter, MaterialName!!)
                 try {
-                    if (!arrayContains(
-                            filamentVendors,
+                    if (!listContains(
+                            Constants.filamentVendors,
                             MaterialName!!.split((dl.type.selectedItem.toString() + " ").toRegex())
                                 .dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[0].trim { it <= ' ' })
@@ -780,19 +770,19 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
                 } catch (ignored: ArrayIndexOutOfBoundsException) {
                     dl.txtserial.setText("")
                 }
-                val temps: IntArray = GetTemps(filamentDao!!, MaterialName)
-                dl.txtextmin.setText(temps[0].toString())
-                dl.txtextmax.setText(temps[1].toString())
-                dl.txtbedmin.setText(temps[2].toString())
-                dl.txtbedmax.setText(temps[3].toString())
+                val temps: FilamentTemperature = GetTemps(filamentDao!!, MaterialName)
+                dl.txtextmin.setText(temps.extruderMinTemp.toString())
+                dl.txtextmax.setText(temps.extruderMaxTemp.toString())
+                dl.txtbedmin.setText(temps.bedMinTemp.toString())
+                dl.txtbedmax.setText(temps.bedMaxTemp.toString())
             } else {
                 dl.vendor.setSelection(0)
                 dl.type.setSelection(7)
-                val temps: IntArray = GetDefaultTemps("PLA")
-                dl.txtextmin.setText(temps[0].toString())
-                dl.txtextmax.setText(temps[1].toString())
-                dl.txtbedmin.setText(temps[2].toString())
-                dl.txtbedmax.setText(temps[3].toString())
+                val temps: FilamentTemperature = Constants.GetDefaultTemps("PLA")
+                dl.txtextmin.setText(temps.extruderMinTemp.toString())
+                dl.txtextmax.setText(temps.extruderMaxTemp.toString())
+                dl.txtbedmin.setText(temps.bedMinTemp.toString())
+                dl.txtbedmax.setText(temps.bedMaxTemp.toString())
             }
 
             addDialog!!.show()
@@ -810,7 +800,6 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
         tmpBedMax: String?
     ) {
         val filament = Filament()
-        filament.position = filamentDao!!.itemCount
         filament.filamentID = ""
         filament.filamentName = String.format(
             "%s %s %s",
@@ -818,8 +807,14 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
             tmpType,
             tmpSerial.trim { it <= ' ' })
         filament.filamentVendor = ""
-        filament.filamentParam =
-            String.format("%s|%s|%s|%s", tmpExtMin, tmpExtMax, tmpBedMin, tmpBedMax)
+        filament.filamentParam = FilamentParameters(
+            filamentTemperatures = FilamentTemperature(
+                tmpExtMin!!.toInt(),
+                tmpExtMax!!.toInt(),
+                tmpBedMin!!.toInt(),
+                tmpBedMax!!.toInt(),
+            )
+        )
         filamentDao!!.addItem(filament)
         loadMaterials(false)
     }
@@ -833,8 +828,7 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
         tmpBedMin: String?,
         tmpBedMax: String?
     ) {
-        val currentFilament = filamentDao!!.getFilamentByName(MaterialName)
-        val tmpPosition = currentFilament!!.position
+        val currentFilament = filamentDao!!.getFilamentByName(MaterialName)!!
         filamentDao!!.deleteItem(currentFilament)
         MaterialName = String.format(
             "%s %s %s",
@@ -842,12 +836,17 @@ class MainActivity : AppCompatActivity(), ReaderCallback {
             tmpType,
             tmpSerial.trim { it <= ' ' })
         val filament = Filament()
-        filament.position = tmpPosition
         filament.filamentID = ""
         filament.filamentName = MaterialName
         filament.filamentVendor = ""
-        filament.filamentParam =
-            String.format("%s|%s|%s|%s", tmpExtMin, tmpExtMax, tmpBedMin, tmpBedMax)
+        filament.filamentParam = FilamentParameters(
+            filamentTemperatures = FilamentTemperature(
+                tmpExtMin!!.toInt(),
+                tmpExtMax!!.toInt(),
+                tmpBedMin!!.toInt(),
+                tmpBedMax!!.toInt(),
+            )
+        )
         filamentDao!!.addItem(filament)
         loadMaterials(true)
     }
