@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Ace RFID"
-include ':app'
+include(":app")
